@@ -1,3 +1,4 @@
+Hands-on cybersecurity portfolio demonstrating SIEM dashboards, threat detection, and cyber deception techniques using real-world tools like Splunk and Grafana.
 # cybersecurity-portfolio
 ## 📊 Splunk Dashboard
 ![Splunk Dashboard](screenshots/splunk-dashboard.png)
@@ -13,3 +14,4 @@
 
 ## 🔔 Grafana Alert
 ![Grafana Alert](screenshots/grafana-alert.png)
+• Analyzed over 2.8 million security events using Splunk (BOTSv3 dataset) to identify traffic patterns and support threat detection
