@@ -13,6 +13,9 @@ Hands-on cybersecurity portfolio demonstrating SIEM dashboards, threat detection
 
 ---
 
+## TryHackMe Labs
+- [Subdomain and Virtual Host Enumeration](tryhackme/subdomain-enumeration/README.md)
+
 ## 📊 Splunk & Grafana Dashboard Lab
 
 Built SIEM dashboards using Splunk and Grafana to visualize and analyze large-scale security data.
