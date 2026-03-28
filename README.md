@@ -1,63 +1,35 @@
-# Cybersecurity Portfolio – Tren Patterson
+# 🔐 Tren Patterson – Cybersecurity Portfolio
 
-Hands-on cybersecurity portfolio demonstrating SIEM dashboards, threat detection, and cyber deception techniques using real-world tools like Splunk and Grafana.
-
----
-
-## 🔐 Skills Demonstrated
-
-• Analyzed over 2.8 million security events using Splunk (BOTSv3 dataset) to identify traffic patterns and support threat detection
-• Designed and implemented SIEM dashboards and alerting mechanisms in Splunk and Grafana for anomaly detection and incident response
-• Conducted network traffic analysis using geolocation mapping and visualization techniques
-• Developed a cyber deception proposal using CyberTrap and compared it to open-source tools (ADHD)
+Welcome to my cybersecurity portfolio. This repository documents my hands-on learning, labs, and tools as I build skills in penetration testing and network security.
 
 ---
 
-## TryHackMe Labs
-- [Subdomain and Virtual Host Enumeration](tryhackme/subdomain-enumeration/README.md)
+## 📂 Contents
 
-## 📊 Splunk & Grafana Dashboard Lab
-
-Built SIEM dashboards using Splunk and Grafana to visualize and analyze large-scale security data.
-
-### 🔍 Key Work:
-
-* Created dashboards with charts, maps, and tables
-* Identified top source IPs and geographic traffic patterns
-* Configured alerts for anomaly detection
-
-### 📸 Visual Evidence
-
-#### Splunk Dashboard
-
-![Splunk Dashboard](labs/splunk-grafana-dashboard/screenshots/splunk-dashboard.png)
-
-#### Grafana Dashboard
-
-![Grafana Dashboard](labs/splunk-grafana-dashboard/screenshots/grafana-dashboard.png)
-
-## 🛡️ CyberTrap Active Defense Proposal
-
-Researched and developed a proposal for implementing cyber deception technology in an enterprise environment.
-
-### 🔍 Key Work:
-
-* Analyzed CyberTrap’s deception-based detection approach
-* Compared CyberTrap to the ADHD open-source toolkit
-* Designed a professional implementation proposal with visuals
-
-📁 Location: labs/cybertrap-proposal/
+### 🧪 TryHackMe Labs
+- Intro to LAN
+- File Inclusion
+- HTTP in Detail
 
 ---
 
-## 📘 Journal
-
-Ongoing documentation of hands-on labs, tools used, and lessons learned in cybersecurity.
-
-📁 Location: journal/
+### 🛠️ Pentesting Toolkit
+A collection of tools and commands I use during labs and practice:
+- Nmap
+- ffuf
+- Gobuster
+- curl
+- Netcat
 
 ---
 
-## 🎯 Career Goal
+## 🎯 Skills Demonstrated
+- Web application testing (LFI, directory traversal)
+- Network fundamentals (TCP/IP, ARP, DHCP)
+- HTTP request manipulation
+- Enumeration and reconnaissance
 
-To develop real-world SOC, incident response, and cyber defense skills and transition into a cybersecurity analyst role.
+---
+
+## 🚀 Goal
+To become a penetration tester by building real-world skills through hands-on labs and continuous learning.
