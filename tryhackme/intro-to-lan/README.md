@@ -44,3 +44,4 @@ Network security should rely on strong authentication mechanisms rather than ide
 Personal Reflection
 
 This room helped reinforce foundational networking concepts and demonstrated how easily weak access controls can be bypassed. It also improved my understanding of how tools like ping are used in both troubleshooting and reconnaissance.
+ 
