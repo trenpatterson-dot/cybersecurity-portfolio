@@ -38,17 +38,6 @@ Permissions were assigned to Bob (BobP) based on required access.
 
 ---
 
-### Wendy's Permissions
-Permissions were assigned to Wendy (WendyP) with appropriate access levels.
-
-![Wendy Permissions](images/figure4-wendy-permissions.png)
-
----
-
-## ✅ Verification of Permissions
-Permissions were verified to ensure correct access levels were applied.
-
-![Verification](images/figure5-permissions-verification.png)
 
 ---
 
