@@ -1,35 +1,63 @@
-# 🔐 Tren Patterson – Cybersecurity Portfolio
+# 🛡️ Cybersecurity Portfolio – Tren Patterson
 
-Welcome to my cybersecurity portfolio. This repository documents my hands-on learning, labs, and tools as I build skills in penetration testing and network security.
+## 👨‍💻 About Me
+I am a cybersecurity student at Bellevue University with a focus on **Protect & Defend**.  
+I am passionate about hands-on learning and continuously developing skills in penetration testing, incident response, and digital forensics.
+
+This portfolio showcases my practical experience through labs, projects, and security exercises completed throughout my coursework.
+
+---
+
+## 🎯 Career Focus
+- Cyber Defense Analyst  
+- Incident Responder  
+- Digital Forensics Analyst  
+- IT Auditor  
 
 ---
 
-## 📂 Contents
-
-### 🧪 TryHackMe Labs
-- Intro to LAN
-- File Inclusion
-- HTTP in Detail
+## 🧠 Skills Demonstrated
+- 🔍 Network Scanning & Enumeration (Nmap, Wireshark)
+- 🛡️ Vulnerability Assessment & Analysis
+- 🚨 Incident Response (NIST SP 800-61)
+- 🌐 Web Application Security (OWASP Top 10)
+- 🧪 Penetration Testing Methodologies
+- 🖥️ Linux & Windows System Analysis
+- 📊 Log Analysis (Splunk)
 
 ---
+
+## 🛠️ Tools & Technologies
+- Kali Linux  
+- Nmap  
+- Wireshark  
+- Metasploit  
+- Splunk  
+- TheHive / Eramba  
+- Volatility (Memory Forensics)  
+- Git & GitHub  
+
+---
+
+## 📂 Portfolio Structure
+
+### 📓 Journal
+Contains reflections, notes, and lessons learned from labs and exercises.
+
+### 🧪 Labs
+Hands-on cybersecurity labs demonstrating technical skills and analysis.
 
 ### 🛠️ Pentesting Toolkit
-A collection of tools and commands I use during labs and practice:
-- Nmap
-- ffuf
-- Gobuster
-- curl
-- Netcat
+Documentation and usage of penetration testing tools.
+
+### 🌐 TryHackMe
+Walkthroughs and completed rooms focused on real-world cybersecurity scenarios.
 
 ---
 
-## 🎯 Skills Demonstrated
-- Web application testing (LFI, directory traversal)
-- Network fundamentals (TCP/IP, ARP, DHCP)
-- HTTP request manipulation
-- Enumeration and reconnaissance
+## 📸 Featured Work
+*(Add screenshots here later for your best labs)*
 
----
-
-## 🚀 Goal
-To become a penetration tester by building real-world skills through hands-on labs and continuous learning.
+Example:
+```md
+![Wireshark Analysis](assets/screenshots/wireshark-analysis.png)
