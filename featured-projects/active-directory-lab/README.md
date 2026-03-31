@@ -126,7 +126,17 @@ This project mirrors enterprise-level Active Directory environments used in corp
 - Cybersecurity Analyst  
 - System Administrator  
 - IT Support Specialist  
-- Identity & Access Management Analyst  
+- Identity & Access Management Analyst
+
+- ## Project Outcomes
+
+This project demonstrated the ability to configure and manage an Active Directory environment in a structured and secure way. Key outcomes included:
+
+- Creating and organizing users and computer objects
+- Building Organizational Units to separate administrative domains
+- Assigning security groups to support role-based access control
+- Configuring NTFS permissions to protect shared resources
+- Applying Group Policy to enforce user-facing security settings
 
 ---
 
