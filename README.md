@@ -61,3 +61,9 @@ Walkthroughs and completed rooms focused on real-world cybersecurity scenarios.
 Example:
 ```md
 ![Wireshark Analysis](assets/screenshots/wireshark-analysis.png)
+## 🏆 Featured Project
+
+### 🖥️ Active Directory Enterprise Lab
+Simulated enterprise environment demonstrating identity management, access control, and Group Policy enforcement.
+
+🔗 [View Project](featured-projects/active-directory-lab)
