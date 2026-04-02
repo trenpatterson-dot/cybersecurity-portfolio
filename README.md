@@ -67,3 +67,10 @@ Example:
 Simulated enterprise environment demonstrating identity management, access control, and Group Policy enforcement.
 
 🔗 [View Project](featured-projects/active-directory-lab)
+# Cybersecurity Portfolio – Tren Patterson
+
+## Projects
+
+- Threat Hunting with Wazuh
+- Active Directory Lab (coming soon)
+- Penetration Testing Labs (coming soon)
