@@ -1,0 +1,5 @@
+Simulated DNS Issue Scenario
+
+- If ping 8.8.8.8 succeeds but ping google.com fails, the likely issue is DNS.
+- This means internet connectivity exists at the IP level, but name resolution is failing.
+- Troubleshooting would include checking DNS server settings, router DNS configuration, or ISP DNS issues.
