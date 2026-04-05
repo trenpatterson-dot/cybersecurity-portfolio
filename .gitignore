@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lab documents (keep scripts and READMEs only)
+*.docx
+*.pdf
+*.drawio
+
+# Images (add your own screenshots)
+*.png
+*.jpg
+*.jpeg
