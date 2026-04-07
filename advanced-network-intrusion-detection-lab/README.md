@@ -138,6 +138,18 @@ alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"Something really bad is happe
 ## What I Learned
 
 This lab reinforced the value of layered network defense and threat hunting. Writing a Suricata rule showed how signatures can be tailored to detect specific traffic patterns. Zeek demonstrated how metadata can simplify analysis compared to raw packets, and RITA showed how automation and statistics can reveal beaconing, exfiltration, and outlier behavior that would be difficult to identify manually.
+## Key Results
+
+- Created and deployed a custom Suricata IDS rule and successfully triggered alerts in SELKS  
+- Analyzed large-scale network traffic using Zeek logs instead of raw packet inspection  
+- Identified long-lived TLS connections (11–24 hours) indicative of possible C2 activity  
+- Detected high-confidence beaconing behavior using RITA (score near 1.0)  
+- Discovered suspicious DNS activity consistent with tunneling/exfiltration (1x.com)  
+- Flagged abnormal PowerShell-based User-Agent linked to automated/malicious traffic
+
+- ## Why This Matters
+
+This project demonstrates real-world SOC analyst skills by combining IDS alerting, network metadata analysis, and threat hunting. It shows how attackers can hide in normal traffic and how tools like Zeek and RITA can surface patterns such as beaconing, DNS tunneling, and long-lived connections that are difficult to detect manually.
 
 ## Files to Include in GitHub
 
