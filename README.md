@@ -68,6 +68,7 @@ and university coursework focused on incident detection and response.
 | [Threat Hunting with Wazuh](threat-hunting-wazuh) | SIEM-based threat detection and alerting | Wazuh, Ubuntu |
 | [Module 4: DLP](module-4) | Data Loss Prevention with Python OCR | Python, Tesseract |
 | [TryHackMe Write-ups](tryhackme) | LFI, IDOR, enumeration, web app security | ffuf, Nmap, Burp |
+| [Advanced Network Intrusion Detection Lab](advanced-network-intrusion-detection-lab) | Blue team lab using Suricata, Zeek, and RITA to detect IDS alerts, beaconing, long-lived connections, suspicious DNS activity, and abnormal user agents | Suricata, Zeek, RITA, Wireshark, Kibana |
 
 ---
 
