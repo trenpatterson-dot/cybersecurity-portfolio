@@ -1,0 +1,32 @@
+wing: cybersecurity_portfolio
+rooms:
+- name: advanced_network_intrusion_detection_lab
+  description: Files from advanced-network-intrusion-detection-lab/
+- name: brute_force_detection_lab
+  description: Files from brute-force-detection-lab/
+- name: cyber_deception
+  description: Files from cyber-deception/
+- name: cybr_445
+  description: Files from CYBR 445/
+- name: featured_projects
+  description: Files from featured-projects/
+- name: journal
+  description: Files from journal/
+- name: lab1_nmap_reconnaissance
+  description: Files from lab1-nmap-reconnaissance/
+- name: labs
+  description: Files from labs/
+- name: metasploitable_vsftpd_exploit_lab
+  description: Files from metasploitable-vsftpd-exploit-lab/
+- name: pentesting_toolkit
+  description: Files from pentesting-toolkit/
+- name: portfolio
+  description: Files from portfolio/
+- name: threat_hunting_wazuh
+  description: Files from threat-hunting-wazuh/
+- name: tryhackme
+  description: Files from tryhackme/
+- name: documentation
+  description: Files from docs/
+- name: general
+  description: Files that don't fit other rooms

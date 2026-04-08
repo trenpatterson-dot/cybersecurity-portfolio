@@ -1,0 +1,17 @@
+{
+  "people": [],
+  "projects": [
+    "Wireshark",
+    "Suricata",
+    "Zeek",
+    "Active",
+    "Tren",
+    "Patterson",
+    "Nmap",
+    "Advanced",
+    "Intrusion",
+    "Hunting",
+    "Wazuh",
+    "Cowrie"
+  ]
+}
