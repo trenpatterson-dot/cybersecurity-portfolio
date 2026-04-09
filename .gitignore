@@ -20,3 +20,6 @@ Thumbs.db
 *.png
 *.jpg
 *.jpeg
+agent-output/
+portfolio-agent/.env
+.tmp.driveupload/
