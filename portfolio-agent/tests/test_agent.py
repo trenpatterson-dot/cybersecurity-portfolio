@@ -91,6 +91,25 @@ def test_single_project_mode_only_processes_named_project(tmp_path, monkeypatch,
     assert not (output_dir / "alpha-project").exists()
 
 
+def test_repeated_project_flag_returns_clear_error(tmp_path, monkeypatch, capsys):
+    portfolio_root = tmp_path / "portfolio"
+    output_dir = tmp_path / "agent-output"
+    create_project(portfolio_root, "phishing-analysis", {"README.md": ("Phishing project summary.", 0)})
+    create_project(portfolio_root, "cyber-deception", {"README.md": ("Cyber deception summary.", 0)})
+    configure_env(monkeypatch, portfolio_root, output_dir)
+
+    exit_code = run_agent(
+        monkeypatch,
+        ["--project", "phishing-analysis", "--project", "cyber-deception"],
+    )
+    captured = capsys.readouterr().out
+
+    assert exit_code == 1
+    assert "ERROR: Repeated --project is not supported yet." in captured
+    assert "Use exactly one --project value or run without --project for a full scan." in captured
+    assert not output_dir.exists()
+
+
 def test_recent_days_mode_only_processes_recent_projects(tmp_path, monkeypatch, capsys):
     portfolio_root = tmp_path / "portfolio"
     output_dir = tmp_path / "agent-output"

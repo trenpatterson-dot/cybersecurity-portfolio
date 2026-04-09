@@ -14,6 +14,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--project",
+        action="append",
         help="Only process one top-level project folder by name.",
     )
     parser.add_argument(
@@ -146,7 +147,15 @@ def main() -> int:
     print(f"Dry run        : {'enabled' if args.dry_run else 'disabled'}")
     print("-" * 72)
 
-    if args.pick and args.project:
+    if args.project and len(args.project) > 1:
+        provided_projects = ", ".join(args.project)
+        print(f"ERROR: Repeated --project is not supported yet. Received: {provided_projects}")
+        print("Use exactly one --project value or run without --project for a full scan.")
+        return 1
+
+    selected_project = args.project[0] if args.project else None
+
+    if args.pick and selected_project:
         print("ERROR: Use only one of --pick or --project.")
         return 1
 
@@ -155,10 +164,10 @@ def main() -> int:
         settings,
         recent_days=args.recent_days,
     )
-    if args.project:
-        target_name = args.project.lower()
+    if selected_project:
+        target_name = selected_project.lower()
         if target_name not in top_level_dirs:
-            print(f"ERROR: Project folder '{args.project}' does not exist in {settings.portfolio_root}")
+            print(f"ERROR: Project folder '{selected_project}' does not exist in {settings.portfolio_root}")
             return 1
         decisions = [decision for decision in decisions if decision.path.name.lower() == target_name]
 
@@ -179,9 +188,9 @@ def main() -> int:
         return 1
 
     if not processable_projects:
-        if args.project and skipped_projects:
+        if selected_project and skipped_projects:
             skip_reason = skipped_projects[0].reason
-            print(f"ERROR: Project folder '{args.project}' was found but skipped: {skip_reason}")
+            print(f"ERROR: Project folder '{selected_project}' was found but skipped: {skip_reason}")
             return 1
         if args.recent_days > 0:
             print(f"No eligible project folders were found with supported files modified in the last {args.recent_days} day(s).")

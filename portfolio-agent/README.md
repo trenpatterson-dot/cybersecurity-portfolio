@@ -47,6 +47,12 @@ Single-project example:
 python agent.py --project phishing-analysis
 ```
 
+Repeated `--project` values are rejected. Use exactly one project name:
+
+```powershell
+python agent.py --project phishing-analysis
+```
+
 Interactive picker example:
 
 ```powershell
