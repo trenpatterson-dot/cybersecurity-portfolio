@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from decimal import Decimal
 
 
 @dataclass(slots=True)
@@ -18,3 +19,25 @@ class Draft:
     content: str
     status: str = "pending"
     created_at: datetime | None = None
+
+
+@dataclass(slots=True)
+class Product:
+    """Structured product data returned by product source providers.
+
+    This model lives in `models.py` because it is shared application data,
+    not provider-specific logic.
+    """
+
+    product_id: str
+    asin: str
+    title: str
+    category: str
+    source_price: Decimal
+    source_currency: str
+    product_url: str
+    image_url: str
+    source_name: str
+    source_timestamp_utc: str
+    discount_percent: Decimal | None = None
+    discount_amount: Decimal | None = None
