@@ -41,3 +41,17 @@ class Product:
     source_timestamp_utc: str
     discount_percent: Decimal | None = None
     discount_amount: Decimal | None = None
+
+
+@dataclass(slots=True)
+class ProductDraft:
+    """Structured draft content generated for one product."""
+
+    draft_id: str
+    product_id: str
+    draft_type: str
+    title: str
+    caption: str
+    affiliate_url: str
+    disclosure_text: str
+    compliance_notes: list[str]
