@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import os
+import stat
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from pathlib import Path
 
 from .config import Settings
-from .parsers import read_supported_file
+from .parsers import is_binary_text_file, read_supported_file
 
 
 BASE_SKIP_DIRS = {
@@ -26,6 +28,17 @@ BASE_SKIP_DIRS = {
 SUPPORTED_EXTENSIONS = {".md", ".txt", ".docx", ".pdf"}
 README_NAMES = {"readme", "readme.md", "readme.txt"}
 SUPPORTING_DIR_NAMES = {"docs", "doc", "notes", "note", "assets", "images", "img", "screenshots"}
+SECRET_FILE_NAMES = {"api.txt"}
+SECRET_FILE_EXTENSIONS = {".env", ".key", ".pem", ".p12", ".pfx", ".kdbx"}
+SECRET_NAME_TOKENS = {
+    "secret",
+    "token",
+    "credential",
+    "apikey",
+    "api-key",
+    "private-key",
+    "private_key",
+}
 
 
 @dataclass
@@ -65,6 +78,85 @@ def _is_skippable_dir_name(name: str, settings: Settings) -> bool:
     return False
 
 
+def _is_relative_to(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+        return True
+    except ValueError:
+        return False
+
+
+def _resolve_existing_path(path: Path) -> Path | None:
+    try:
+        return path.resolve(strict=True)
+    except OSError:
+        return None
+
+
+def _is_link_or_reparse_point(path: Path) -> bool:
+    try:
+        if path.is_symlink():
+            return True
+        stat_result = os.lstat(path)
+    except OSError:
+        return True
+
+    file_attributes = getattr(stat_result, "st_file_attributes", 0)
+    file_attribute_reparse_point = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x0400)
+    return bool(file_attributes & file_attribute_reparse_point)
+
+
+def _is_safe_directory(path: Path, settings: Settings) -> bool:
+    if _is_link_or_reparse_point(path):
+        return False
+    resolved_path = _resolve_existing_path(path)
+    if resolved_path is None:
+        return False
+    return _is_relative_to(resolved_path, settings.portfolio_root)
+
+
+def _is_secret_like_file(path: Path) -> bool:
+    name = path.name.lower()
+    stem = path.stem.lower()
+    suffix = path.suffix.lower()
+
+    if name == ".env" or name.startswith(".env."):
+        return True
+    if name in SECRET_FILE_NAMES:
+        return True
+    if suffix in SECRET_FILE_EXTENSIONS:
+        return True
+    if any(token in stem for token in SECRET_NAME_TOKENS):
+        return True
+    return False
+
+
+def _is_supported_source_file(path: Path) -> bool:
+    return path.suffix.lower() in SUPPORTED_EXTENSIONS and not _is_secret_like_file(path)
+
+
+def _is_safe_source_path(path: Path, settings: Settings) -> bool:
+    if not path.is_file():
+        return False
+    if not _is_supported_source_file(path):
+        return False
+    if _is_link_or_reparse_point(path):
+        return False
+    resolved_path = _resolve_existing_path(path)
+    if resolved_path is None:
+        return False
+    if not _is_relative_to(resolved_path, settings.portfolio_root):
+        return False
+    try:
+        if path.stat().st_size > settings.max_file_size_bytes:
+            return False
+    except OSError:
+        return False
+    if path.suffix.lower() in {".md", ".txt"} and is_binary_text_file(path):
+        return False
+    return True
+
+
 def discover_projects(portfolio_root: Path, settings: Settings) -> list[ProjectDecision]:
     return discover_projects_with_filters(portfolio_root, settings, recent_days=0)
 
@@ -75,6 +167,19 @@ def discover_projects_with_filters(
     recent_days: int = 0,
 ) -> list[ProjectDecision]:
     decisions: list[ProjectDecision] = []
+    portfolio_root_resolved = _resolve_existing_path(portfolio_root)
+    if portfolio_root_resolved is None:
+        return decisions
+    settings = Settings(
+        portfolio_root=portfolio_root_resolved,
+        output_dir=settings.output_dir,
+        max_files_per_project=settings.max_files_per_project,
+        max_chars_per_file=settings.max_chars_per_file,
+        max_pdf_pages=settings.max_pdf_pages,
+        max_file_size_bytes=settings.max_file_size_bytes,
+        allowlist=settings.allowlist,
+        denylist=settings.denylist,
+    )
     cutoff = None
     if recent_days > 0:
         cutoff = datetime.now() - timedelta(days=recent_days)
@@ -91,7 +196,10 @@ def discover_projects_with_filters(
         if _is_skippable_dir_name(child.name, settings):
             decisions.append(ProjectDecision(path=child, should_process=False, reason="denylisted or meta folder"))
             continue
-        root_content_count = count_root_supported_files(child)
+        if not _is_safe_directory(child, settings):
+            decisions.append(ProjectDecision(path=child, should_process=False, reason="linked or out-of-root folder"))
+            continue
+        root_content_count = count_root_supported_files(child, settings)
         if root_content_count == 0:
             decisions.append(ProjectDecision(path=child, should_process=False, reason="no supported project files in project root"))
             continue
@@ -150,11 +258,11 @@ def collect_project_sources(project_path: Path, settings: Settings) -> ProjectSc
         dirnames[:] = [
             dirname
             for dirname in dirnames
-            if not _is_skippable_dir_name(dirname, settings)
+            if not _is_skippable_dir_name(dirname, settings) and _is_safe_directory(current_root / dirname, settings)
         ]
         for filename in filenames:
             path = current_root / filename
-            if path.suffix.lower() in SUPPORTED_EXTENSIONS:
+            if _is_safe_source_path(path, settings):
                 candidates.append(path)
 
     candidates = sorted(candidates, key=_file_priority)
@@ -191,20 +299,20 @@ def count_supported_files(project_path: Path, settings: Settings) -> int:
         dirnames[:] = [
             dirname
             for dirname in dirnames
-            if not _is_skippable_dir_name(dirname, settings)
+            if not _is_skippable_dir_name(dirname, settings) and _is_safe_directory(current_root / dirname, settings)
         ]
         for filename in filenames:
-            if Path(filename).suffix.lower() in SUPPORTED_EXTENSIONS:
+            if _is_safe_source_path(current_root / filename, settings):
                 count += 1
                 if count >= 1:
                     return count
     return count
 
 
-def count_root_supported_files(project_path: Path) -> int:
+def count_root_supported_files(project_path: Path, settings: Settings) -> int:
     count = 0
     for child in project_path.iterdir():
-        if child.is_file() and child.suffix.lower() in SUPPORTED_EXTENSIONS:
+        if child.is_file() and _is_safe_source_path(child, settings):
             count += 1
     return count
 
@@ -219,11 +327,11 @@ def find_recent_supported_file(
         dirnames[:] = [
             dirname
             for dirname in dirnames
-            if not _is_skippable_dir_name(dirname, settings)
+            if not _is_skippable_dir_name(dirname, settings) and _is_safe_directory(current_root / dirname, settings)
         ]
         for filename in filenames:
             path = current_root / filename
-            if path.suffix.lower() not in SUPPORTED_EXTENSIONS:
+            if not _is_safe_source_path(path, settings):
                 continue
             modified_at = datetime.fromtimestamp(path.stat().st_mtime)
             if modified_at >= cutoff:

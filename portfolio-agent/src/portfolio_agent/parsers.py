@@ -3,7 +3,30 @@ from __future__ import annotations
 from pathlib import Path
 
 
+def is_binary_text_file(path: Path) -> bool:
+    try:
+        sample = path.read_bytes()[:4096]
+    except OSError:
+        return True
+
+    if not sample:
+        return False
+    if b"\x00" in sample:
+        return True
+
+    suspicious = 0
+    for byte in sample:
+        if byte in (9, 10, 13):
+            continue
+        if byte < 32 or byte == 127:
+            suspicious += 1
+
+    return (suspicious / len(sample)) > 0.10
+
+
 def read_text_file(path: Path, max_chars: int) -> str:
+    if is_binary_text_file(path):
+        return ""
     try:
         return path.read_text(encoding="utf-8", errors="ignore")[:max_chars]
     except OSError:

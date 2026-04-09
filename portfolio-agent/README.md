@@ -47,6 +47,12 @@ Single-project example:
 python agent.py --project phishing-analysis
 ```
 
+Interactive picker example:
+
+```powershell
+python agent.py --pick
+```
+
 Recent-only example:
 
 ```powershell
@@ -57,6 +63,30 @@ Combined example:
 
 ```powershell
 python agent.py --project phishing-analysis --recent-days 7
+```
+
+Public-safe example:
+
+```powershell
+python agent.py --project phishing-analysis --public
+```
+
+Dry-run example:
+
+```powershell
+python agent.py --dry-run
+```
+
+Single-project dry-run example:
+
+```powershell
+python agent.py --project phishing-analysis --dry-run
+```
+
+Filtered picker example:
+
+```powershell
+python agent.py --pick --recent-days 7
 ```
 
 Quick-access paths after a run:
@@ -78,6 +108,7 @@ You can control scanning later in `.env`:
 ```powershell
 PROJECT_ALLOWLIST=brute-force-detection-lab,threat-hunting-wazuh
 PROJECT_DENYLIST=portfolio,portfolio-agent,lab-doc-agent,log-analyst-agent,journal,agent-output,.git,.github,node_modules,venv,__pycache__,.vscode,screenshots
+MAX_FILE_SIZE_BYTES=1048576
 ```
 
 - `PROJECT_ALLOWLIST`: if set, only these top-level folders are eligible
@@ -87,11 +118,15 @@ PROJECT_DENYLIST=portfolio,portfolio-agent,lab-doc-agent,log-analyst-agent,journ
 
 - This tool is template-based and fully local. It does not send your data to cloud services.
 - If `python-docx` or `pypdf` are unavailable, the agent will skip `.docx` or `.pdf` parsing gracefully.
+- The scanner only reads files that resolve inside the configured portfolio root.
+- Symlinks, junctions, and other linked paths that resolve outside the portfolio root are skipped.
+- Supported source parsing stays strict: only `.md`, `.txt`, `.docx`, and `.pdf` are considered.
+- Large files above `MAX_FILE_SIZE_BYTES` and basic binary/non-text content are skipped.
 
 ## Tests
 
 Run the test suite from the `portfolio-agent` folder:
 
 ```powershell
-pytest
+python -m pytest
 ```

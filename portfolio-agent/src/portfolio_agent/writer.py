@@ -99,7 +99,7 @@ def analyze_project(scan: ProjectScan) -> ProjectAnalysis:
     )
 
 
-def write_project_outputs(scan: ProjectScan, output_root: Path) -> Path:
+def write_project_outputs(scan: ProjectScan, output_root: Path, public_mode: bool = False) -> Path:
     analysis = analyze_project(scan)
     project_output_dir = output_root / analysis.project_slug
     project_output_dir.mkdir(parents=True, exist_ok=True)
@@ -107,21 +107,23 @@ def write_project_outputs(scan: ProjectScan, output_root: Path) -> Path:
     _clear_existing_output_files(project_output_dir)
 
     files = {
-        "eli10.md": build_eli10_summary(analysis, scan),
-        "technical-summary.md": build_technical_summary(analysis, scan),
-        "github-update.md": build_github_readme_update(analysis, scan),
-        "linkedin-post.md": build_linkedin_post(analysis, scan),
-        "onenote-notes.md": build_onenote_notes(analysis, scan),
-        "sources.md": build_source_manifest(analysis, scan),
+        "eli10.md": build_eli10_summary(analysis, scan, public_mode=public_mode),
+        "technical-summary.md": build_technical_summary(analysis, scan, public_mode=public_mode),
+        "github-update.md": build_github_readme_update(analysis, scan, public_mode=public_mode),
+        "linkedin-post.md": build_linkedin_post(analysis, scan, public_mode=public_mode),
+        "onenote-notes.md": build_onenote_notes(analysis, scan, public_mode=public_mode),
+        "sources.md": build_source_manifest(analysis, scan, public_mode=public_mode),
     }
 
     for filename, content in files.items():
+        if public_mode:
+            content = sanitize_public_output(content)
         (project_output_dir / filename).write_text(content, encoding="utf-8")
 
     return project_output_dir
 
 
-def build_eli10_summary(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+def build_eli10_summary(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
     intro = (
         f"# ELI10 Summary: {analysis.project_title}\n\n"
         f"This project is like a safety check for a digital building. "
@@ -140,7 +142,10 @@ def build_eli10_summary(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
     return intro + "\n".join(body) + "\n"
 
 
-def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
+    if public_mode:
+        return build_public_technical_summary(analysis, scan)
+
     lines = [
         f"# Technical Summary: {analysis.project_title}",
         "",
@@ -185,7 +190,10 @@ def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan) -> str
     return "\n".join(lines) + "\n"
 
 
-def build_github_readme_update(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+def build_github_readme_update(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
+    if public_mode:
+        return build_public_github_update(analysis, scan)
+
     lines = [
         f"# GitHub-Ready README Text: {analysis.project_title}",
         "",
@@ -221,7 +229,10 @@ def build_github_readme_update(analysis: ProjectAnalysis, scan: ProjectScan) -> 
     return "\n".join(lines) + "\n"
 
 
-def build_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+def build_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
+    if public_mode:
+        return build_public_linkedin_post(analysis, scan)
+
     hook = f"Turned another cybersecurity lab into a portfolio-ready write-up: {analysis.project_title}."
     lesson_one = _sentence_or_default(
         analysis.summary_sentences,
@@ -251,7 +262,10 @@ def build_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
     )
 
 
-def build_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+def build_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
+    if public_mode:
+        return build_public_onenote_notes(analysis, scan)
+
     lines = [
         f"# OneNote Notes: {analysis.project_title}",
         "",
@@ -294,7 +308,7 @@ def build_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
     return "\n".join(lines) + "\n"
 
 
-def build_source_manifest(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+def build_source_manifest(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
     lines = [
         f"# Sources: {analysis.project_title}",
         "",
@@ -305,7 +319,127 @@ def build_source_manifest(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
         lines.append("- No supported text sources were available.")
     else:
         for source in scan.sources:
-            lines.append(f"- `{source.relative_path}` ({source.source_type})")
+            source_label = source.path.name if public_mode else source.relative_path
+            lines.append(f"- `{source_label}` ({source.source_type})")
+        if public_mode:
+            lines.extend(
+                [
+                    "",
+                    "Only safe source filenames are shown in public mode.",
+                ]
+            )
+    return "\n".join(lines) + "\n"
+
+
+def build_public_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+    public_sentences = _public_safe_sentences(analysis)
+    lines = [
+        f"# Technical Summary: {analysis.project_title}",
+        "",
+        *_limited_source_notice(scan),
+        "> Public mode: this version is sanitized for safer sharing and avoids internal note detail.",
+        "",
+        "## Overview",
+        f"- Project: `{scan.project_path.name}`",
+        f"- Focus areas: {', '.join(analysis.topics) if analysis.topics else 'cybersecurity analysis and documentation'}",
+        f"- Tools referenced: {', '.join(analysis.tools) if analysis.tools else 'No tools were confidently identified from the safe source material.'}",
+        "",
+        "## Public-Facing Highlights",
+    ]
+    if public_sentences:
+        lines.extend(f"- {sentence}" for sentence in public_sentences[:4])
+    else:
+        lines.append("- This project demonstrates hands-on cybersecurity work and portfolio documentation in a public-safe format.")
+    lines.extend(
+        [
+            "",
+            "## Skills Demonstrated",
+            "- Security analysis",
+            "- Technical communication",
+            "- Portfolio documentation",
+            "- Converting detailed work into a recruiter-friendly summary",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def build_public_github_update(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+    public_sentences = _public_safe_sentences(analysis)
+    lines = [
+        f"# GitHub-Ready README Text: {analysis.project_title}",
+        "",
+        *_limited_source_notice(scan),
+        "> Public mode: this version keeps the summary high-level and avoids internal detail.",
+        "",
+        "## Project Summary",
+        f"{analysis.project_title} is a cybersecurity project focused on {', '.join(analysis.topics) if analysis.topics else 'security analysis and documentation'}. This public-facing version highlights the purpose, tools, and outcomes without exposing sensitive or internal-only notes.",
+        "",
+        "## Tools Used",
+        f"- {', '.join(analysis.tools) if analysis.tools else 'Add confirmed tools here after a safe public review.'}",
+        "",
+        "## Key Takeaways",
+    ]
+    if public_sentences:
+        lines.extend(f"- {sentence}" for sentence in public_sentences[:3])
+    else:
+        lines.append("- The project shows a practical cybersecurity workflow and the ability to document results clearly.")
+    return "\n".join(lines) + "\n"
+
+
+def build_public_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+    public_sentences = _public_safe_sentences(analysis)
+    lesson_one = _sentence_or_default(
+        public_sentences,
+        0,
+        "This project helped sharpen the habit of turning technical work into a clear public summary.",
+    )
+    lesson_two = _sentence_or_default(
+        public_sentences,
+        1,
+        "It also reinforced how valuable it is to document tools, findings, and takeaways in a recruiter-friendly format.",
+    )
+    hashtags = " ".join(f"#{topic.replace('-', '')}" for topic in analysis.topics[:4]) or "#Cybersecurity #SOCAnalyst #BlueTeam #Portfolio"
+
+    return (
+        f"# LinkedIn Post Draft: {analysis.project_title}\n\n"
+        "> Public mode: sanitized for safer sharing.\n\n"
+        f"Built another public-facing portfolio summary for {analysis.project_title}.\n\n"
+        "Two takeaways from the project:\n"
+        f"- {lesson_one}\n"
+        f"- {lesson_two}\n\n"
+        "Clear documentation makes technical work easier to share with recruiters, hiring managers, and other cybersecurity professionals.\n\n"
+        f"{hashtags}\n"
+    )
+
+
+def build_public_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+    public_sentences = _public_safe_sentences(analysis)
+    lines = [
+        f"# OneNote Notes: {analysis.project_title}",
+        "",
+        *_limited_source_notice(scan),
+        "> Public mode: this note set excludes internal-only details and local path references.",
+        "",
+        "## Snapshot",
+        f"- Project: `{scan.project_path.name}`",
+        f"- Topics: {', '.join(analysis.topics) if analysis.topics else 'security analysis and documentation'}",
+        f"- Tools: {', '.join(analysis.tools) if analysis.tools else 'Add confirmed tools after a safe manual review.'}",
+        "",
+        "## Public Notes",
+    ]
+    if public_sentences:
+        lines.extend(f"- {sentence}" for sentence in public_sentences[:5])
+    else:
+        lines.append("- This project has been summarized in a safer public format with only high-level takeaways.")
+    lines.extend(
+        [
+            "",
+            "## Follow-Up Ideas",
+            "- Keep examples outcome-focused and recruiter-friendly.",
+            "- Avoid copying internal notes or sensitive troubleshooting details into public summaries.",
+            "- Use the GitHub and LinkedIn drafts as the primary public-facing versions.",
+        ]
+    )
     return "\n".join(lines) + "\n"
 
 
@@ -327,6 +461,18 @@ def _limited_source_notice(scan: ProjectScan) -> list[str]:
             "",
         ]
     return []
+
+
+def sanitize_public_output(content: str) -> str:
+    sanitized = content
+    sanitized = re.sub(r"\b([A-Z][A-Z0-9_]{2,})\s*=\s*[^\s`]+", r"\1=[REDACTED]", sanitized)
+    sanitized = re.sub(r"sk-[A-Za-z0-9_-]+", "[REDACTED]", sanitized)
+    sanitized = re.sub(r"[A-Za-z]:\\[^\s`]+", "[LOCAL_PATH]", sanitized)
+    sanitized = re.sub(r"/Users/[^\s`]+", "[LOCAL_PATH]", sanitized)
+    sanitized = re.sub(r"/home/[^\s`]+", "[LOCAL_PATH]", sanitized)
+    sanitized = re.sub(r"(?i)\b(password|secret|token|credential|api[-_ ]?key|private[-_ ]?key)\b\s*[:=]\s*[^\s`]+", r"\1: [REDACTED]", sanitized)
+    sanitized = re.sub(r"(?i)\binternal[- ]?only\b", "public-safe", sanitized)
+    return sanitized
 
 
 def _extract_headings(scan: ProjectScan) -> list[str]:
@@ -396,6 +542,16 @@ def _sentence_or_default(sentences: list[str], index: int, default: str) -> str:
     if index < len(sentences):
         return sentences[index]
     return default
+
+
+def _public_safe_sentences(analysis: ProjectAnalysis) -> list[str]:
+    safe_sentences = []
+    for sentence in analysis.summary_sentences:
+        lowered = sentence.lower()
+        if any(token in lowered for token in ["secret", "token", "password", "credential", "internal", "private key", "api key"]):
+            continue
+        safe_sentences.append(sanitize_public_output(sentence))
+    return safe_sentences
 
 
 def _normalize_source_text(text: str) -> str:

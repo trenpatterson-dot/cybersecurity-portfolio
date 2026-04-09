@@ -13,6 +13,7 @@ class Settings:
     max_files_per_project: int
     max_chars_per_file: int
     max_pdf_pages: int
+    max_file_size_bytes: int
     allowlist: set[str]
     denylist: set[str]
 
@@ -39,6 +40,7 @@ def get_settings(base_dir: Path) -> Settings:
         max_files_per_project=int(os.getenv("MAX_FILES_PER_PROJECT", "12")),
         max_chars_per_file=int(os.getenv("MAX_CHARS_PER_FILE", "12000")),
         max_pdf_pages=int(os.getenv("MAX_PDF_PAGES", "10")),
+        max_file_size_bytes=int(os.getenv("MAX_FILE_SIZE_BYTES", "1048576")),
         allowlist=_parse_name_list(os.getenv("PROJECT_ALLOWLIST", "")),
         denylist=_parse_name_list(os.getenv("PROJECT_DENYLIST", "")),
     )
