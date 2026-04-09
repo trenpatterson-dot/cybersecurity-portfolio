@@ -162,3 +162,24 @@ def test_standardized_output_filenames_are_created(tmp_path, monkeypatch):
     sources_content = (project_output / "sources.md").read_text(encoding="utf-8")
     assert "README.md" in sources_content
     assert "notes.txt" in sources_content
+
+
+def test_open_flag_prints_quick_access_paths_for_single_project(tmp_path, monkeypatch, capsys):
+    portfolio_root = tmp_path / "portfolio"
+    output_dir = tmp_path / "agent-output"
+    create_project(
+        portfolio_root,
+        "phishing-analysis",
+        {"README.md": ("Phishing project summary.", 0)},
+    )
+    configure_env(monkeypatch, portfolio_root, output_dir)
+
+    exit_code = run_agent(monkeypatch, ["--project", "phishing-analysis", "--open"])
+    captured = capsys.readouterr().out
+    project_output = output_dir / "phishing-analysis"
+
+    assert exit_code == 0
+    assert "Quick-access files:" in captured
+    assert f"github-update.md : {project_output / 'github-update.md'}" in captured
+    assert f"linkedin-post.md : {project_output / 'linkedin-post.md'}" in captured
+    assert f"onenote-notes.md : {project_output / 'onenote-notes.md'}" in captured

@@ -28,6 +28,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=0,
         help="Only process projects with supported source files modified in the last N days.",
     )
+    parser.add_argument(
+        "--open",
+        action="store_true",
+        help="Print quick-access paths for github-update.md, linkedin-post.md, and onenote-notes.md after the run.",
+    )
     return parser
 
 
@@ -65,6 +70,15 @@ def write_run_index(
 
 def _slugify(name: str) -> str:
     return "".join(ch.lower() if ch.isalnum() else "-" for ch in name).strip("-").replace("--", "-")
+
+
+def print_quick_access_paths(project_output_dirs: list[Path]) -> None:
+    print("Quick-access files:")
+    for output_dir in project_output_dirs:
+        print(f"  - {output_dir.name}")
+        print(f"    github-update.md : {output_dir / 'github-update.md'}")
+        print(f"    linkedin-post.md : {output_dir / 'linkedin-post.md'}")
+        print(f"    onenote-notes.md : {output_dir / 'onenote-notes.md'}")
 
 
 def main() -> int:
@@ -130,6 +144,7 @@ def main() -> int:
     settings.output_dir.mkdir(parents=True, exist_ok=True)
 
     processed_count = 0
+    project_output_dirs: list[Path] = []
     for decision in processable_projects:
         project = decision.path
         print(f"[+] Scanning {project.name}")
@@ -138,6 +153,7 @@ def main() -> int:
         print(f"    Sources used : {len(scan.sources)}")
         print(f"    Output saved : {output_dir}")
         processed_count += 1
+        project_output_dirs.append(output_dir)
 
     index_path = write_run_index(settings.output_dir, processable_projects, skipped_projects)
 
@@ -149,6 +165,9 @@ def main() -> int:
     for decision in skipped_projects:
         print(f"  - {decision.path.name} ({decision.reason})")
     print("-" * 72)
+    if args.open:
+        print_quick_access_paths(project_output_dirs)
+        print("-" * 72)
     print(f"Run index      : {index_path}")
     print(f"Completed {processed_count} project(s).")
     return 0

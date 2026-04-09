@@ -59,6 +59,12 @@ Combined example:
 python agent.py --project phishing-analysis --recent-days 7
 ```
 
+Quick-access paths after a run:
+
+```powershell
+python agent.py --project phishing-analysis --open
+```
+
 Optional:
 
 ```powershell
