@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir C:\\\\Users\\\\trenp\\\\cybersecurity-portfolio\\\\lab-doc-agent:*)"
+    ]
+  }
+}

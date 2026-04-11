@@ -474,3 +474,100 @@ def test_pick_mode_works_with_dry_run(tmp_path, monkeypatch, capsys):
     assert "Pick a project:" in captured
     assert "[DRY-RUN] Would process alpha-project" in captured
     assert not output_dir.exists()
+
+
+def test_generic_software_project_output_avoids_cybersecurity_framing(tmp_path, monkeypatch):
+    portfolio_root = tmp_path / "portfolio"
+    output_dir = tmp_path / "agent-output"
+    create_project(
+        portfolio_root,
+        "affiliate-content-agent",
+        {
+            "README.md": (
+                "A beginner-friendly Python project for building a compliance-aware affiliate content workflow. "
+                "It loads product data, scores products, generates affiliate-ready drafts, runs compliance checks, "
+                "stores drafts in a human review queue, and supports safe dry-run publishing previews.",
+                0,
+            ),
+        },
+    )
+    configure_env(monkeypatch, portfolio_root, output_dir)
+
+    exit_code = run_agent(monkeypatch, ["--project", "affiliate-content-agent"])
+
+    assert exit_code == 0
+    project_output = output_dir / "affiliate-content-agent"
+    eli10 = (project_output / "eli10.md").read_text(encoding="utf-8")
+    technical = (project_output / "technical-summary.md").read_text(encoding="utf-8")
+    github_update = (project_output / "github-update.md").read_text(encoding="utf-8")
+    linkedin = (project_output / "linkedin-post.md").read_text(encoding="utf-8")
+
+    for content in [eli10, technical, github_update, linkedin]:
+        assert "cybersecurity lab" not in content.lower()
+        assert "digital building" not in content.lower()
+
+    assert "affiliate content workflow" in technical.lower()
+    assert "## Repo Description" in github_update
+    assert "## Suggested Topics" in github_update
+    assert "#affiliatecontent" in linkedin.lower()
+
+
+def test_setup_instructions_are_filtered_out_of_summary_sentences(tmp_path, monkeypatch):
+    portfolio_root = tmp_path / "portfolio"
+    output_dir = tmp_path / "agent-output"
+    create_project(
+        portfolio_root,
+        "automation-project",
+        {
+            "README.md": (
+                "This tool automates a review workflow for local content drafts with a manual approval step. "
+                "It keeps the process readable, testable, and safer by default. "
+                "git clone https://example.com/repo.git "
+                "python -m venv .venv "
+                "pip install -r requirements.txt "
+                "Run the tests with pytest.",
+                0,
+            ),
+        },
+    )
+    configure_env(monkeypatch, portfolio_root, output_dir)
+
+    exit_code = run_agent(monkeypatch, ["--project", "automation-project"])
+
+    assert exit_code == 0
+    technical = (output_dir / "automation-project" / "technical-summary.md").read_text(encoding="utf-8")
+
+    assert "git clone" not in technical.lower()
+    assert "python -m venv" not in technical.lower()
+    assert "pip install" not in technical.lower()
+    assert "manual approval step" in technical.lower()
+
+
+def test_discovery_skips_inaccessible_subfolders_instead_of_crashing(tmp_path, monkeypatch):
+    portfolio_root = tmp_path / "portfolio"
+    output_dir = tmp_path / "agent-output"
+    accessible_project = create_project(
+        portfolio_root,
+        "accessible-project",
+        {"README.md": ("Accessible project summary.", 0)},
+    )
+    protected_parent = portfolio_root / "protected-parent"
+    protected_parent.mkdir(parents=True, exist_ok=True)
+    protected_child = protected_parent / "blocked"
+    protected_child.mkdir(parents=True, exist_ok=True)
+
+    original_iterdir = Path.iterdir
+
+    def guarded_iterdir(self):
+        if self == protected_parent:
+            raise PermissionError("access denied")
+        return original_iterdir(self)
+
+    monkeypatch.setattr(Path, "iterdir", guarded_iterdir)
+    configure_env(monkeypatch, portfolio_root, output_dir)
+
+    exit_code = run_agent(monkeypatch, [])
+
+    assert exit_code == 0
+    assert accessible_project.exists()
+    assert (output_dir / "accessible-project").is_dir()

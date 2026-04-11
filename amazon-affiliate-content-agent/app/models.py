@@ -7,6 +7,23 @@ from datetime import datetime
 from decimal import Decimal
 
 
+DRAFTED = "DRAFTED"
+BLOCKED = "BLOCKED"
+READY_FOR_REVIEW = "READY_FOR_REVIEW"
+APPROVED = "APPROVED"
+REJECTED = "REJECTED"
+PUBLISHED = "PUBLISHED"
+
+DRAFT_STATUSES = (
+    DRAFTED,
+    BLOCKED,
+    READY_FOR_REVIEW,
+    APPROVED,
+    REJECTED,
+    PUBLISHED,
+)
+
+
 @dataclass(slots=True)
 class Draft:
     """A basic draft record.
@@ -55,3 +72,6 @@ class ProductDraft:
     affiliate_url: str
     disclosure_text: str
     compliance_notes: list[str]
+    status: str = DRAFTED
+    created_at: str | None = None
+    updated_at: str | None = None

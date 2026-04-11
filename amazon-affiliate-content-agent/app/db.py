@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from pathlib import Path
 
-from app.models import Draft
+from app.models import ProductDraft
 
 
 def _ensure_data_directory(database_path: Path) -> None:
@@ -23,19 +24,37 @@ def get_connection(database_path: Path) -> sqlite3.Connection:
 
 
 def initialize_database(database_path: Path) -> None:
-    """Create the database file and required tables."""
+    """Create the database file and required active tables."""
     connection = get_connection(database_path)
 
     try:
         cursor = connection.cursor()
         cursor.execute(
             """
-            CREATE TABLE IF NOT EXISTS drafts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+            CREATE TABLE IF NOT EXISTS product_drafts (
+                draft_id TEXT PRIMARY KEY,
+                product_id TEXT NOT NULL,
+                draft_type TEXT NOT NULL,
                 title TEXT NOT NULL,
-                content TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'pending',
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+                caption TEXT NOT NULL,
+                affiliate_url TEXT NOT NULL,
+                disclosure_text TEXT NOT NULL,
+                compliance_notes TEXT NOT NULL,
+                status TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS compliance_results (
+                draft_id TEXT PRIMARY KEY,
+                passed INTEGER NOT NULL,
+                reasons TEXT NOT NULL,
+                checklist TEXT NOT NULL,
+                reviewed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (draft_id) REFERENCES product_drafts (draft_id)
             )
             """
         )
@@ -44,12 +63,21 @@ def initialize_database(database_path: Path) -> None:
         connection.close()
 
 
-def row_to_draft(row: sqlite3.Row) -> Draft:
-    """Convert a SQLite row into a Draft model."""
-    return Draft(
-        id=row["id"],
+def row_to_product_draft(row: sqlite3.Row) -> ProductDraft:
+    """Convert a SQLite row into a ProductDraft model."""
+
+    compliance_notes = json.loads(row["compliance_notes"]) if row["compliance_notes"] else []
+
+    return ProductDraft(
+        draft_id=row["draft_id"],
+        product_id=row["product_id"],
+        draft_type=row["draft_type"],
         title=row["title"],
-        content=row["content"],
+        caption=row["caption"],
+        affiliate_url=row["affiliate_url"],
+        disclosure_text=row["disclosure_text"],
+        compliance_notes=compliance_notes,
         status=row["status"],
         created_at=row["created_at"],
+        updated_at=row["updated_at"],
     )

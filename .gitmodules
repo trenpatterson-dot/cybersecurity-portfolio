@@ -1,0 +1,3 @@
+[submodule "log-analyst-agent"]
+	path = log-analyst-agent
+	url = https://github.com/trenpatterson-dot/log-analyst-agent.git

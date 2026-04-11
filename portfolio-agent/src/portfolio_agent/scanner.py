@@ -93,6 +93,13 @@ def _resolve_existing_path(path: Path) -> Path | None:
         return None
 
 
+def _safe_iterdir(path: Path) -> list[Path]:
+    try:
+        return list(path.iterdir())
+    except OSError:
+        return []
+
+
 def _is_link_or_reparse_point(path: Path) -> bool:
     try:
         if path.is_symlink():
@@ -183,7 +190,7 @@ def discover_projects_with_filters(
     cutoff = None
     if recent_days > 0:
         cutoff = datetime.now() - timedelta(days=recent_days)
-    for child in sorted(portfolio_root.iterdir(), key=lambda item: item.name.lower()):
+    for child in sorted(_safe_iterdir(portfolio_root), key=lambda item: item.name.lower()):
         child_name = child.name.lower()
         if not child.is_dir():
             continue
@@ -254,7 +261,8 @@ def _file_priority(path: Path) -> tuple[int, int, int, int, str]:
 def collect_project_sources(project_path: Path, settings: Settings) -> ProjectScan:
     candidates: list[Path] = []
 
-    for current_root, dirnames, filenames in project_path.walk(top_down=True):
+    for current_root, dirnames, filenames in os.walk(project_path, topdown=True, onerror=lambda _: None):
+        current_root = Path(current_root)
         dirnames[:] = [
             dirname
             for dirname in dirnames
@@ -295,7 +303,8 @@ def collect_project_sources(project_path: Path, settings: Settings) -> ProjectSc
 
 def count_supported_files(project_path: Path, settings: Settings) -> int:
     count = 0
-    for current_root, dirnames, filenames in project_path.walk(top_down=True):
+    for current_root, dirnames, filenames in os.walk(project_path, topdown=True, onerror=lambda _: None):
+        current_root = Path(current_root)
         dirnames[:] = [
             dirname
             for dirname in dirnames
@@ -311,7 +320,7 @@ def count_supported_files(project_path: Path, settings: Settings) -> int:
 
 def count_root_supported_files(project_path: Path, settings: Settings) -> int:
     count = 0
-    for child in project_path.iterdir():
+    for child in _safe_iterdir(project_path):
         if child.is_file() and _is_safe_source_path(child, settings):
             count += 1
     return count
@@ -323,7 +332,8 @@ def find_recent_supported_file(
     cutoff: datetime,
 ) -> Path | None:
     candidates: list[Path] = []
-    for current_root, dirnames, filenames in project_path.walk(top_down=True):
+    for current_root, dirnames, filenames in os.walk(project_path, topdown=True, onerror=lambda _: None):
+        current_root = Path(current_root)
         dirnames[:] = [
             dirname
             for dirname in dirnames
@@ -345,7 +355,7 @@ def find_recent_supported_file(
 
 def count_child_project_dirs(project_path: Path) -> int:
     count = 0
-    for child in project_path.iterdir():
+    for child in _safe_iterdir(project_path):
         if not child.is_dir():
             continue
         if child.name.startswith("."):
@@ -358,7 +368,7 @@ def count_child_project_dirs(project_path: Path) -> int:
 
 
 def has_root_readme(project_path: Path) -> bool:
-    for child in project_path.iterdir():
+    for child in _safe_iterdir(project_path):
         if child.is_file() and child.name.lower() in README_NAMES:
             return True
     return False

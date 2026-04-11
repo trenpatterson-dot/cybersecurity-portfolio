@@ -78,11 +78,23 @@ class Settings:
     app_name: str
     app_env: str
     debug: bool
+    dry_run: bool
     log_level: str
+    product_source_provider: str
     data_dir: Path
     database_path: Path
-    openai_api_key: str | None
     amazon_associate_tag: str
+    creators_api_public_key: str | None
+    creators_api_private_key: str | None
+    creators_api_host: str | None
+    creators_api_region: str | None
+    creators_api_marketplace: str | None
+    creators_api_service: str | None
+    creators_api_path: str | None
+    creators_api_target: str | None
+    creators_api_item_ids: tuple[str, ...]
+    facebook_page_id: str | None
+    facebook_page_access_token: str | None
 
     def safe_log_values(self) -> dict[str, str]:
         """Return a version of the settings that is safe to log."""
@@ -90,11 +102,23 @@ class Settings:
             "app_name": self.app_name,
             "app_env": self.app_env,
             "debug": str(self.debug),
+            "dry_run": str(self.dry_run),
             "log_level": self.log_level,
+            "product_source_provider": self.product_source_provider,
             "data_dir": str(self.data_dir),
             "database_path": str(self.database_path),
-            "openai_api_key": mask_secret(self.openai_api_key),
             "amazon_associate_tag": mask_secret(self.amazon_associate_tag),
+            "creators_api_public_key": mask_secret(self.creators_api_public_key),
+            "creators_api_private_key": mask_secret(self.creators_api_private_key),
+            "creators_api_host": self.creators_api_host or "<not-set>",
+            "creators_api_region": self.creators_api_region or "<not-set>",
+            "creators_api_marketplace": self.creators_api_marketplace or "<not-set>",
+            "creators_api_service": self.creators_api_service or "<not-set>",
+            "creators_api_path": self.creators_api_path or "<not-set>",
+            "creators_api_target": self.creators_api_target or "<not-set>",
+            "creators_api_item_ids_count": str(len(self.creators_api_item_ids)),
+            "facebook_page_id": mask_secret(self.facebook_page_id),
+            "facebook_page_access_token": mask_secret(self.facebook_page_access_token),
         }
 
 
@@ -103,8 +127,6 @@ def load_settings() -> Settings:
 
     Phase 1 only requires:
     - AMAZON_ASSOCIATE_TAG
-
-    We still read OPENAI_API_KEY if it exists, but we do not require it yet.
     """
 
     # Load local development variables before reading from os.environ.
@@ -117,18 +139,39 @@ def load_settings() -> Settings:
     app_name = _clean_env("APP_NAME", "amazon-affiliate-content-agent") or "amazon-affiliate-content-agent"
     app_env = _clean_env("APP_ENV", "development") or "development"
     log_level = (_clean_env("LOG_LEVEL", "INFO") or "INFO").upper()
+    product_source_provider = (_clean_env("PRODUCT_SOURCE_PROVIDER", "mock") or "mock").lower()
     debug = _to_bool(_clean_env("DEBUG"), default=False)
+    dry_run = _to_bool(_clean_env("DRY_RUN"), default=True)
 
     data_dir_raw = _clean_env("DATA_DIR")
     database_path_raw = _clean_env("DATABASE_PATH")
-    openai_api_key = _clean_env("OPENAI_API_KEY")
     amazon_associate_tag = _clean_env("AMAZON_ASSOCIATE_TAG")
+    creators_api_public_key = _clean_env("CREATORS_API_PUBLIC_KEY")
+    creators_api_private_key = _clean_env("CREATORS_API_PRIVATE_KEY")
+    creators_api_host = _clean_env("CREATORS_API_HOST")
+    creators_api_region = _clean_env("CREATORS_API_REGION")
+    creators_api_marketplace = _clean_env("CREATORS_API_MARKETPLACE")
+    creators_api_service = _clean_env("CREATORS_API_SERVICE")
+    creators_api_path = _clean_env("CREATORS_API_PATH")
+    creators_api_target = _clean_env("CREATORS_API_TARGET")
+    creators_api_item_ids = tuple(
+        item.strip()
+        for item in (_clean_env("CREATORS_API_ITEM_IDS", "") or "").split(",")
+        if item.strip()
+    )
+    facebook_page_id = _clean_env("FACEBOOK_PAGE_ID")
+    facebook_page_access_token = _clean_env("FACEBOOK_PAGE_ACCESS_TOKEN")
 
     missing_fields: list[str] = []
 
     if not amazon_associate_tag:
         missing_fields.append(
             "AMAZON_ASSOCIATE_TAG is required. Add your Amazon Associates tracking tag to the environment."
+        )
+
+    if product_source_provider not in {"mock", "creators_api"}:
+        missing_fields.append(
+            "PRODUCT_SOURCE_PROVIDER must be either 'mock' or 'creators_api'."
         )
 
     if missing_fields:
@@ -142,9 +185,21 @@ def load_settings() -> Settings:
         app_name=app_name,
         app_env=app_env,
         debug=debug,
+        dry_run=dry_run,
         log_level=log_level,
+        product_source_provider=product_source_provider,
         data_dir=data_dir,
         database_path=database_path,
-        openai_api_key=openai_api_key,
         amazon_associate_tag=amazon_associate_tag,
+        creators_api_public_key=creators_api_public_key,
+        creators_api_private_key=creators_api_private_key,
+        creators_api_host=creators_api_host,
+        creators_api_region=creators_api_region,
+        creators_api_marketplace=creators_api_marketplace,
+        creators_api_service=creators_api_service,
+        creators_api_path=creators_api_path,
+        creators_api_target=creators_api_target,
+        creators_api_item_ids=creators_api_item_ids,
+        facebook_page_id=facebook_page_id,
+        facebook_page_access_token=facebook_page_access_token,
     )

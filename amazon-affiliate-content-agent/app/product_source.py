@@ -19,9 +19,12 @@ The long-term goal is simple:
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 
+from app.config import Settings, load_settings
+from app.creators_api import CreatorsApiClient, CreatorsApiClientConfig, CreatorsApiClientError
 from app.models import Product
 
 
@@ -45,6 +48,35 @@ class ProductSourceProvider(ABC):
         """
 
         raise NotImplementedError("This provider does not support get_all_products().")
+
+
+class ProductSourceError(Exception):
+    """Raised when a provider cannot load product data safely."""
+
+
+@dataclass(slots=True)
+class ProductSourceSelection:
+    """Resolved provider metadata for the current workflow run."""
+
+    provider: ProductSourceProvider
+    provider_name: str
+    fallback_reason: str | None = None
+
+
+@dataclass(slots=True)
+class CreatorsApiConfig:
+    """Configuration values needed for a future Creators API integration."""
+
+    public_key: str
+    private_key: str
+    host: str
+    region: str
+    marketplace: str
+    partner_tag: str
+    service: str
+    path: str
+    target: str | None
+    item_ids: tuple[str, ...]
 
 
 class MockProductSourceProvider(ProductSourceProvider):
@@ -125,6 +157,93 @@ class MockProductSourceProvider(ProductSourceProvider):
         return list(self._products)
 
 
+class CreatorsApiProductSourceProvider(ProductSourceProvider):
+    """Scaffold for a future Amazon Creators API-backed provider.
+
+    The provider validates configuration now so the application can
+    switch to a real integration later without changing the rest of the
+    workflow. Until signed request support is added, the app falls back
+    to the mock provider instead of making unsafe guesses.
+    """
+
+    def __init__(self, config: CreatorsApiConfig) -> None:
+        self._config = config
+
+    @classmethod
+    def from_settings(cls, settings: Settings) -> "CreatorsApiProductSourceProvider":
+        missing_fields: list[str] = []
+
+        if not settings.creators_api_public_key:
+            missing_fields.append("CREATORS_API_PUBLIC_KEY")
+        if not settings.creators_api_private_key:
+            missing_fields.append("CREATORS_API_PRIVATE_KEY")
+        if not settings.creators_api_host:
+            missing_fields.append("CREATORS_API_HOST")
+        if not settings.creators_api_region:
+            missing_fields.append("CREATORS_API_REGION")
+        if not settings.creators_api_marketplace:
+            missing_fields.append("CREATORS_API_MARKETPLACE")
+        if not settings.creators_api_item_ids:
+            missing_fields.append("CREATORS_API_ITEM_IDS")
+
+        if missing_fields:
+            raise ProductSourceError(
+                "Creators API provider is selected but missing configuration: "
+                + ", ".join(missing_fields)
+            )
+
+        return cls(
+            CreatorsApiConfig(
+                public_key=settings.creators_api_public_key,
+                private_key=settings.creators_api_private_key,
+                host=settings.creators_api_host,
+                region=settings.creators_api_region,
+                marketplace=settings.creators_api_marketplace,
+                partner_tag=settings.amazon_associate_tag,
+                service=settings.creators_api_service or "execute-api",
+                path=settings.creators_api_path or "/creators-api/products",
+                target=settings.creators_api_target,
+                item_ids=settings.creators_api_item_ids,
+            )
+        )
+
+    def get_products_by_category(self, category: str) -> list[Product]:
+        """Return products for one category.
+
+        This method intentionally raises for now because the project
+        still needs signed request support for the real Amazon API.
+        """
+
+        products = self.get_all_products()
+        normalized_category = category.strip().lower()
+        return [
+            product
+            for product in products
+            if product.category.strip().lower() == normalized_category
+        ]
+
+    def get_all_products(self) -> list[Product]:
+        """Return all products from the configured Creators API source."""
+
+        client = CreatorsApiClient(
+            CreatorsApiClientConfig(
+                public_key=self._config.public_key,
+                private_key=self._config.private_key,
+                host=self._config.host,
+                region=self._config.region,
+                marketplace=self._config.marketplace,
+                partner_tag=self._config.partner_tag,
+                service=self._config.service,
+                path=self._config.path,
+                target=self._config.target,
+            )
+        )
+        try:
+            return client.get_items(list(self._config.item_ids))
+        except CreatorsApiClientError as error:
+            raise ProductSourceError(str(error)) from error
+
+
 def get_default_provider() -> ProductSourceProvider:
     """Return the provider used by default in Phase 2.
 
@@ -133,6 +252,31 @@ def get_default_provider() -> ProductSourceProvider:
     """
 
     return MockProductSourceProvider()
+
+
+def resolve_provider(settings: Settings | None = None) -> ProductSourceSelection:
+    """Return the active provider along with fallback metadata."""
+
+    active_settings = settings or load_settings()
+
+    if active_settings.product_source_provider == "creators_api":
+        try:
+            provider = CreatorsApiProductSourceProvider.from_settings(active_settings)
+            return ProductSourceSelection(
+                provider=provider,
+                provider_name="creators_api",
+            )
+        except ProductSourceError as error:
+            return ProductSourceSelection(
+                provider=MockProductSourceProvider(),
+                provider_name="mock",
+                fallback_reason=str(error),
+            )
+
+    return ProductSourceSelection(
+        provider=MockProductSourceProvider(),
+        provider_name="mock",
+    )
 
 
 def get_products_by_category(
@@ -145,14 +289,14 @@ def get_products_by_category(
     can supply a fake provider without changing the function itself.
     """
 
-    active_provider = provider or get_default_provider()
+    active_provider = provider or resolve_provider().provider
     return active_provider.get_products_by_category(category)
 
 
 def get_all_products(provider: ProductSourceProvider | None = None) -> list[Product]:
     """Return every product from the selected provider."""
 
-    active_provider = provider or get_default_provider()
+    active_provider = provider or resolve_provider().provider
     return active_provider.get_all_products()
 
 

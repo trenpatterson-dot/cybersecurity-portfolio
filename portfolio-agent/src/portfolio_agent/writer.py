@@ -27,6 +27,11 @@ TOOL_KEYWORDS = {
     "hydra": "Hydra",
     "dns": "DNS",
     "tcp": "TCP/IP",
+    "sqlite": "SQLite",
+    "pytest": "pytest",
+    "facebook": "Facebook Pages",
+    "docker": "Docker",
+    "api": "API",
 }
 
 TOPIC_KEYWORDS = {
@@ -43,6 +48,15 @@ TOPIC_KEYWORDS = {
     "brute force": "brute-force-detection",
     "dns": "dns-analysis",
     "ssh": "ssh-monitoring",
+    "affiliate": "affiliate-content",
+    "compliance": "compliance-aware",
+    "workflow": "workflow-automation",
+    "automation": "automation",
+    "content": "content-systems",
+    "sqlite": "sqlite",
+    "pytest": "testing",
+    "backend": "backend-development",
+    "facebook": "social-media-publishing",
 }
 
 STOPWORDS = {
@@ -64,7 +78,41 @@ STOPWORDS = {
     "used",
     "user",
     "lab",
+    "python",
 }
+
+SENSITIVE_KEYWORD_TOKENS = {
+    "secret",
+    "token",
+    "password",
+    "credential",
+    "private",
+    "api",
+    "key",
+    "openai",
+}
+
+SETUP_SENTENCE_TOKENS = (
+    "git clone",
+    "pip install",
+    "python -m venv",
+    "activate.ps1",
+    "source .venv",
+    "run the app",
+    "run the tests",
+    "windows powershell",
+    "macos / linux",
+    "current workflow example",
+    "example test output",
+    "collected ",
+    "copy-item",
+    "passed in",
+    "clone the repository",
+    "create and activate a virtual environment",
+    "workflow summary",
+    "=============================",
+    "github.com/",
+)
 
 
 @dataclass
@@ -126,18 +174,17 @@ def write_project_outputs(scan: ProjectScan, output_root: Path, public_mode: boo
 def build_eli10_summary(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
     intro = (
         f"# ELI10 Summary: {analysis.project_title}\n\n"
-        f"This project is like a safety check for a digital building. "
-        f"The goal was to look for signs of trouble, understand what was happening, "
-        f"and explain why it matters in simple language.\n\n"
+        f"This project is like a helpful assistant for a real task. "
+        f"It takes a job that could be messy or manual and turns it into a clearer, safer workflow.\n\n"
     )
     body = [
         *_limited_source_notice(scan),
         "## In Plain English",
         f"- The project folder was reviewed locally using notes and write-ups already inside `{scan.project_path.name}`.",
-        f"- Main idea: {_sentence_or_default(analysis.summary_sentences, 0, 'The project focuses on identifying, documenting, and explaining a cybersecurity task or lab.')}",
-        f"- Why it matters: {_sentence_or_default(analysis.summary_sentences, 1, 'It helps show how defenders or analysts notice problems, investigate them, and learn from them.')}",
+        f"- Main idea: {_sentence_or_default(analysis.summary_sentences, 0, 'The project turns a practical task into a structured workflow that is easier to understand and repeat.')}",
+        f"- Why it matters: {_sentence_or_default(analysis.summary_sentences, 1, 'It shows how clear steps, safer defaults, and good documentation can make technical work more useful.')}",
         f"- Tools involved: {', '.join(analysis.tools) if analysis.tools else 'The written notes did not clearly name tools, but the project still documents a real workflow.'}",
-        "- Big takeaway: cybersecurity work is often about collecting clues, checking evidence, and turning technical steps into clear decisions.",
+        "- Big takeaway: the strongest projects do more than work technically. They also make the process readable, safe, and easy to review.",
     ]
     return intro + "\n".join(body) + "\n"
 
@@ -153,14 +200,14 @@ def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan, public
         "## Overview",
         f"- Project folder: `{scan.project_path.name}`",
         f"- Sources reviewed: {len(scan.sources)}",
-        f"- Focus areas: {', '.join(analysis.topics) if analysis.topics else 'cybersecurity documentation, analysis, and lab execution'}",
+        f"- Focus areas: {', '.join(analysis.topics) if analysis.topics else 'software workflow design, documentation, and implementation'}",
         "",
         "## What The Project Appears To Cover",
     ]
     if analysis.summary_sentences:
         lines.extend(f"- {sentence}" for sentence in analysis.summary_sentences[:5])
     else:
-        lines.append("- The available files describe a hands-on cybersecurity project, but there was limited extractable text to summarize.")
+        lines.append("- The available files describe a practical technical project, but there was limited extractable text to summarize.")
 
     lines.extend(
         [
@@ -169,9 +216,9 @@ def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan, public
             f"- {', '.join(analysis.tools) if analysis.tools else 'No specific tools were confidently detected from the available text.'}",
             "",
             "## Skills Demonstrated",
-            "- Reading and documenting technical evidence",
-            "- Converting lab activity into a structured portfolio artifact",
-            "- Explaining security work in both simple and technical language",
+            "- Turning requirements into a structured workflow",
+            "- Documenting implementation details in a portfolio-friendly way",
+            "- Explaining technical work in both simple and technical language",
         ]
     )
     if analysis.keyword_highlights:
@@ -181,10 +228,10 @@ def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan, public
         [
             "",
             "## Suggested Portfolio Framing",
-            "- State the lab objective in one sentence.",
+            "- State the project objective in one sentence.",
             "- List the tools used and why they were chosen.",
-            "- Summarize the workflow from setup to findings.",
-            "- End with what was learned and how it maps to analyst skills.",
+            "- Summarize the workflow from inputs to outputs.",
+            "- End with what was learned and how it maps to practical engineering skills.",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -198,12 +245,18 @@ def build_github_readme_update(analysis: ProjectAnalysis, scan: ProjectScan, pub
         f"# GitHub-Ready README Text: {analysis.project_title}",
         "",
         *_limited_source_notice(scan),
+        "## Repo Description",
+        f"- {_build_repo_description(analysis)}",
+        "",
+        "## Suggested Topics",
+        f"- {', '.join(_suggest_github_topics(analysis))}",
+        "",
         "## Project Summary",
-        f"{analysis.project_title} is a cybersecurity portfolio project that documents a hands-on exercise focused on {', '.join(analysis.topics) if analysis.topics else 'security analysis and lab documentation'}. The project was reviewed locally from the existing files in this folder and rewritten into a cleaner portfolio format.",
+        f"{analysis.project_title} is a portfolio project focused on {', '.join(analysis.topics) if analysis.topics else 'software workflow design and technical documentation'}. The project was reviewed locally from the existing files in this folder and rewritten into a cleaner, recruiter-friendly format.",
         "",
         "## Objectives",
         f"- Document the purpose of `{scan.project_path.name}` in a way that is easy for recruiters and hiring managers to understand.",
-        "- Highlight the workflow, findings, and analyst mindset used during the project.",
+        "- Highlight the workflow, implementation choices, and practical engineering mindset used during the project.",
         "- Preserve the technical value while keeping the write-up easy to scan on GitHub.",
         "",
         "## Tools Used",
@@ -220,9 +273,9 @@ def build_github_readme_update(analysis: ProjectAnalysis, scan: ProjectScan, pub
         [
             "",
             "## Skills Demonstrated",
-            "- Security analysis",
+            "- Software design and implementation",
             "- Technical documentation",
-            "- Evidence review and summarization",
+            "- Workflow review and summarization",
             "- Communication for mixed technical and non-technical audiences",
         ]
     )
@@ -233,18 +286,18 @@ def build_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan, public_mod
     if public_mode:
         return build_public_linkedin_post(analysis, scan)
 
-    hook = f"Turned another cybersecurity lab into a portfolio-ready write-up: {analysis.project_title}."
+    hook = f"Turned another hands-on project into a portfolio-ready write-up: {analysis.project_title}."
     lesson_one = _sentence_or_default(
         analysis.summary_sentences,
         0,
-        "This project reinforced how important clear documentation is during technical investigations.",
+        "This project reinforced how useful it is to turn a manual workflow into something more structured and repeatable.",
     )
     lesson_two = _sentence_or_default(
         analysis.summary_sentences,
         1,
-        "It also showed how much value comes from connecting tools, findings, and analyst thinking in one place.",
+        "It also showed how much value comes from combining implementation details, safer defaults, and clear documentation in one place.",
     )
-    hashtags = " ".join(f"#{topic.replace('-', '')}" for topic in analysis.topics[:4]) or "#Cybersecurity #SOCAnalyst #BlueTeam #Homelab"
+    hashtags = _build_hashtags(analysis)
     limited_notice = "\n".join(_limited_source_notice(scan))
     if limited_notice:
         limited_notice = limited_notice + "\n"
@@ -257,7 +310,7 @@ def build_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan, public_mod
         f"- {lesson_one}\n"
         f"- {lesson_two}\n\n"
         f"I also used the project notes inside `{scan.project_path.name}` to turn raw lab material into a cleaner, recruiter-friendly summary.\n\n"
-        f"What is one cybersecurity skill you think becomes more valuable when it is documented clearly?\n\n"
+        f"What is one technical skill you think becomes more valuable when it is documented clearly?\n\n"
         f"{hashtags}\n"
     )
 
@@ -273,7 +326,7 @@ def build_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan, public_mod
         "## Snapshot",
         f"- Project folder: `{scan.project_path.name}`",
         f"- Sources reviewed: {len(scan.sources)}",
-        f"- Primary topics: {', '.join(analysis.topics) if analysis.topics else 'security analysis and documentation'}",
+        f"- Primary topics: {', '.join(analysis.topics) if analysis.topics else 'software workflow design and documentation'}",
         "",
         "## Main Points",
     ]
@@ -302,7 +355,7 @@ def build_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan, public_mod
             "## Follow-Up Ideas",
             "- Add a short timeline of the work performed.",
             "- Add screenshots or command snippets if they strengthen the evidence.",
-            "- Convert the strongest takeaway into a resume bullet or interview story.",
+            "- Convert the strongest takeaway into a resume bullet, GitHub blurb, or interview story.",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -341,7 +394,7 @@ def build_public_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan)
         "",
         "## Overview",
         f"- Project: `{scan.project_path.name}`",
-        f"- Focus areas: {', '.join(analysis.topics) if analysis.topics else 'cybersecurity analysis and documentation'}",
+        f"- Focus areas: {', '.join(analysis.topics) if analysis.topics else 'software workflow design and technical documentation'}",
         f"- Tools referenced: {', '.join(analysis.tools) if analysis.tools else 'No tools were confidently identified from the safe source material.'}",
         "",
         "## Public-Facing Highlights",
@@ -349,12 +402,12 @@ def build_public_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan)
     if public_sentences:
         lines.extend(f"- {sentence}" for sentence in public_sentences[:4])
     else:
-        lines.append("- This project demonstrates hands-on cybersecurity work and portfolio documentation in a public-safe format.")
+        lines.append("- This project demonstrates hands-on technical work and portfolio documentation in a public-safe format.")
     lines.extend(
         [
             "",
             "## Skills Demonstrated",
-            "- Security analysis",
+            "- Technical implementation",
             "- Technical communication",
             "- Portfolio documentation",
             "- Converting detailed work into a recruiter-friendly summary",
@@ -371,8 +424,14 @@ def build_public_github_update(analysis: ProjectAnalysis, scan: ProjectScan) -> 
         *_limited_source_notice(scan),
         "> Public mode: this version keeps the summary high-level and avoids internal detail.",
         "",
+        "## Repo Description",
+        f"- {_build_repo_description(analysis)}",
+        "",
+        "## Suggested Topics",
+        f"- {', '.join(_suggest_github_topics(analysis))}",
+        "",
         "## Project Summary",
-        f"{analysis.project_title} is a cybersecurity project focused on {', '.join(analysis.topics) if analysis.topics else 'security analysis and documentation'}. This public-facing version highlights the purpose, tools, and outcomes without exposing sensitive or internal-only notes.",
+        f"{analysis.project_title} is a technical project focused on {', '.join(analysis.topics) if analysis.topics else 'software workflow design and documentation'}. This public-facing version highlights the purpose, tools, and outcomes without exposing sensitive or internal-only notes.",
         "",
         "## Tools Used",
         f"- {', '.join(analysis.tools) if analysis.tools else 'Add confirmed tools here after a safe public review.'}",
@@ -382,7 +441,7 @@ def build_public_github_update(analysis: ProjectAnalysis, scan: ProjectScan) -> 
     if public_sentences:
         lines.extend(f"- {sentence}" for sentence in public_sentences[:3])
     else:
-        lines.append("- The project shows a practical cybersecurity workflow and the ability to document results clearly.")
+        lines.append("- The project shows a practical technical workflow and the ability to document results clearly.")
     return "\n".join(lines) + "\n"
 
 
@@ -398,7 +457,7 @@ def build_public_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan) -> 
         1,
         "It also reinforced how valuable it is to document tools, findings, and takeaways in a recruiter-friendly format.",
     )
-    hashtags = " ".join(f"#{topic.replace('-', '')}" for topic in analysis.topics[:4]) or "#Cybersecurity #SOCAnalyst #BlueTeam #Portfolio"
+    hashtags = _build_hashtags(analysis)
 
     return (
         f"# LinkedIn Post Draft: {analysis.project_title}\n\n"
@@ -407,7 +466,7 @@ def build_public_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan) -> 
         "Two takeaways from the project:\n"
         f"- {lesson_one}\n"
         f"- {lesson_two}\n\n"
-        "Clear documentation makes technical work easier to share with recruiters, hiring managers, and other cybersecurity professionals.\n\n"
+        "Clear documentation makes technical work easier to share with recruiters, hiring managers, and other technical professionals.\n\n"
         f"{hashtags}\n"
     )
 
@@ -422,7 +481,7 @@ def build_public_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan) -> 
         "",
         "## Snapshot",
         f"- Project: `{scan.project_path.name}`",
-        f"- Topics: {', '.join(analysis.topics) if analysis.topics else 'security analysis and documentation'}",
+        f"- Topics: {', '.join(analysis.topics) if analysis.topics else 'software workflow design and documentation'}",
         f"- Tools: {', '.join(analysis.tools) if analysis.tools else 'Add confirmed tools after a safe manual review.'}",
         "",
         "## Public Notes",
@@ -503,9 +562,14 @@ def _extract_summary_sentences(text: str) -> list[str]:
     selected = []
     for sentence in raw_sentences:
         sentence = re.sub(r"^[^A-Za-z0-9]+", "", sentence.strip(" -#>"))
+        sentence = re.sub(r"^[a-z0-9_-]+\s+", "", sentence)
+        sentence = re.sub(r"^[A-Za-z][A-Za-z\s-]+:\s*", "", sentence)
+        sentence = re.sub(r"\s+\d+\.\s*$", "", sentence)
         if len(sentence) < 60 or len(sentence) > 220:
             continue
         if sentence.lower().startswith(("copyright", "license", "image", "http")):
+            continue
+        if _looks_like_setup_sentence(sentence):
             continue
         selected.append(sentence)
         if len(selected) == 8:
@@ -515,7 +579,11 @@ def _extract_summary_sentences(text: str) -> list[str]:
 
 def _extract_keyword_highlights(text: str) -> list[str]:
     words = re.findall(r"[a-zA-Z][a-zA-Z\-]{3,}", _normalize_source_text(text).lower())
-    counts = Counter(word for word in words if word not in STOPWORDS)
+    counts = Counter(
+        word
+        for word in words
+        if word not in STOPWORDS and not any(token in word for token in SENSITIVE_KEYWORD_TOKENS)
+    )
     return [word for word, _ in counts.most_common(12)]
 
 
@@ -552,6 +620,55 @@ def _public_safe_sentences(analysis: ProjectAnalysis) -> list[str]:
             continue
         safe_sentences.append(sanitize_public_output(sentence))
     return safe_sentences
+
+
+def _build_repo_description(analysis: ProjectAnalysis) -> str:
+    focus = analysis.topics[:3]
+    focus_text = ", ".join(focus) if focus else "practical workflow automation"
+    tool_text = ", ".join(analysis.tools[:3]) if analysis.tools else "local tooling"
+    return (
+        f"{analysis.project_title} is a portfolio project focused on {focus_text}, "
+        f"with a practical implementation built around {tool_text}."
+    )
+
+
+def _suggest_github_topics(analysis: ProjectAnalysis) -> list[str]:
+    topic_pool: list[str] = []
+    for topic in analysis.topics:
+        topic_pool.append(topic)
+    for tool in analysis.tools:
+        normalized = tool.lower().replace(" ", "-")
+        if normalized == "facebook-pages":
+            normalized = "facebook"
+        topic_pool.append(normalized)
+    for keyword in analysis.keyword_highlights:
+        if "-" in keyword or keyword.isalpha():
+            topic_pool.append(keyword.lower())
+
+    cleaned: list[str] = []
+    for topic in topic_pool:
+        normalized = re.sub(r"[^a-z0-9-]+", "-", topic.lower()).strip("-")
+        if not normalized or normalized in cleaned:
+            continue
+        cleaned.append(normalized)
+        if len(cleaned) == 10:
+            break
+
+    if not cleaned:
+        return ["portfolio-project", "technical-writing", "documentation"]
+    return cleaned
+
+
+def _build_hashtags(analysis: ProjectAnalysis) -> str:
+    tags = [f"#{topic.replace('-', '')}" for topic in analysis.topics[:4]]
+    if tags:
+        return " ".join(tags)
+    return "#SoftwareEngineering #Automation #Documentation #PortfolioProject"
+
+
+def _looks_like_setup_sentence(sentence: str) -> bool:
+    lowered = sentence.lower()
+    return any(token in lowered for token in SETUP_SENTENCE_TOKENS)
 
 
 def _normalize_source_text(text: str) -> str:
