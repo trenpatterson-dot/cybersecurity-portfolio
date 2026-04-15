@@ -11,7 +11,7 @@ You do one final `git push` to publish.
 
 ---
 
-## The 5-Step Process
+## The 6-Step Process
 
 ### Step 1 — Tell Me About the Lab
 Start a new Cowork session and say:
@@ -78,6 +78,15 @@ That publishes everything to GitHub. Then you copy the LinkedIn post and post it
 
 ---
 
+### Step 6 — Auto-Generated Session Context (Automatic)
+At the end of every lab, I auto-fill the intake form and save it as `SESSION-CONTEXT.md` inside the lab folder. It captures everything we covered: lab name, tools, steps, findings, screenshots used, tags.
+
+Next time you open Cowork, just paste that file and I'm immediately up to speed — no re-explaining.
+
+Location: `[lab-folder]/SESSION-CONTEXT.md`
+
+---
+
 ## Lab Folder Structure
 
 Every lab gets this structure:
@@ -85,6 +94,7 @@ Every lab gets this structure:
 ```
 [lab-name]/
 ├── README.md                  ← GitHub-facing writeup
+├── SESSION-CONTEXT.md         ← Auto-filled intake form (paste this next session)
 ├── screenshots/               ← All screenshots for this lab
 │   └── *.png
 ├── docs/                      ← Any extra notes, configs, or command output
