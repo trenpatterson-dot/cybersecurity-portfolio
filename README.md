@@ -1,92 +1,80 @@
-# 🛡️ Cybersecurity Portfolio – Tren Patterson
+# Cybersecurity Portfolio — Tren Patterson
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/trenpatterson-dot/cybersecurity-portfolio)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 
 ---
 
-## 👤 About Me
+## About Me
 
-I am a cybersecurity student at **Bellevue University** (graduating 2026)
-actively transitioning into a **SOC Analyst / Security Analyst** role.
+Cybersecurity student at **Bellevue University** (graduating 2026), targeting a **SOC Analyst / Blue Team** role.
 
-Currently working as a **Spectrum Internet & Voice Repair Agent (Rep 2)**
-where I troubleshoot network issues daily — building a strong foundation
-in real-world systems and connectivity.
+Currently working as a **Spectrum Internet & Voice Repair Agent (Rep 2)** — daily network troubleshooting across residential and enterprise infrastructure. I build hands-on skills through home labs, TryHackMe, and university coursework focused on incident detection and response.
 
-I build hands-on skills through home labs, TryHackMe, OWASP exercises,
-and university coursework focused on incident detection and response.
-
-📍 Florida | 🎓 Bellevue University | 💼 Target Role: SOC Analyst
+Florida | Bellevue University | Target: SOC Analyst
 
 ---
 
-## 🎯 Career Focus
+## Skills Demonstrated
 
-- Security Operations Center (SOC) Analyst
-- Incident Responder
-- Cyber Defense Analyst
-- Security Analyst
-
----
-
-## 🧠 Skills Demonstrated
-
-- 🔍 Network Scanning & Reconnaissance (Nmap, Wireshark)
-- 🛡️ SIEM Tools (Wazuh, Splunk, Elastic Stack)
-- 🚨 Incident Response (NIST SP 800-61)
-- 🌐 Web Application Security (OWASP Top 10)
-- 🧪 Penetration Testing (Kali Linux, Metasploit)
-- 🖥️ Linux & Windows System Analysis
-- 📊 Log Analysis & Threat Hunting
-- 🐍 Python Scripting & Automation
+- Network Scanning & Reconnaissance (Nmap, Wireshark)
+- SIEM Detection & Alerting (Wazuh, Splunk, Elastic Stack)
+- Intrusion Detection (Suricata, Zeek, RITA)
+- Incident Response (NIST SP 800-61)
+- Penetration Testing (Kali Linux, Metasploit)
+- Phishing & Threat Intelligence Analysis
+- Cyber Deception & Active Defense (Honeypots, Canary Tokens)
+- Log Analysis & Threat Hunting
+- Python Scripting & Automation (Claude API, Notion API, GitPython)
 
 ---
 
-## 🛠️ Tools & Technologies
+## Tools & Technologies
 
 | Category | Tools |
 |----------|-------|
 | SIEM | Wazuh, Splunk, Elastic Stack |
+| IDS/IPS | Suricata, Zeek, RITA, SELKS |
 | Network Analysis | Wireshark, Nmap, tcpdump |
-| Penetration Testing | Kali Linux, Metasploit, Burp Suite |
+| Penetration Testing | Kali Linux, Metasploit, Hydra, Burp Suite |
+| Deception | Cowrie, Portspoof, Canary Tokens, Spidertrap |
 | Scripting | Python, Bash |
-| Platforms | VMware, TryHackMe, OWASP Labs |
+| Platforms | VMware, TryHackMe |
 | Version Control | Git, GitHub |
 
 ---
 
-## 📂 Portfolio Structure
----
+## Labs & Projects
 
-## 🧪 Labs & Projects
-
-| Project | Description | Tools Used |
-|---------|-------------|------------|
-| [Lab 1: Nmap Reconnaissance](lab1-nmap-reconnaissance/README.md) | Network scan identifying open ports and services | Nmap, Kali Linux |
-| [Active Directory Lab](featured-projects/active-directory-lab) | Simulated enterprise AD environment | Windows Server, AD |
-| [Threat Hunting with Wazuh](threat-hunting-wazuh) | SIEM-based threat detection and alerting | Wazuh, Ubuntu |
-| [Module 4: DLP](module-4) | Data Loss Prevention with Python OCR | Python, Tesseract |
-| [TryHackMe Write-ups](tryhackme) | LFI, IDOR, enumeration, web app security | ffuf, Nmap, Burp |
-| [Advanced Network Intrusion Detection Lab](advanced-network-intrusion-detection-lab) | Blue team lab using Suricata, Zeek, and RITA to detect IDS alerts, beaconing, long-lived connections, suspicious DNS activity, and abnormal user agents | Suricata, Zeek, RITA, Wireshark, Kibana |
-
----
-
-## 📜 Education & Certifications
-
-- 🎓 **B.S. Cybersecurity** — Bellevue University *(Expected 2026)*
-- 🔐 Currently pursuing: **CompTIA Security+**
-- 🧪 Active on: **TryHackMe** | **OWASP Labs**
+| Project | Type | Tools |
+|---------|------|-------|
+| [Advanced Network Intrusion Detection](advanced-network-intrusion-detection-lab) | Blue Team / IDS | Suricata, Zeek, RITA, Wireshark, Kibana |
+| [Threat Hunting with Wazuh](threat-hunting-wazuh) | Blue Team / SIEM | Wazuh, Ubuntu, Kali Linux |
+| [Brute Force Detection Lab](brute-force-detection-lab) | Blue Team / SIEM | Wazuh, Hydra, Wireshark |
+| [Wireshark Packet Analysis](lab-doc-agent/outputs/20260415_wireshark_packet_analysis) | Network Forensics | Wireshark, Kali Linux |
+| [Phishing Analysis](phishing-analysis) | Threat Intel / OSINT | URLScan.io, VirusTotal |
+| [Cyber Deception & Active Defense](cyber-deception) | Deception / IR | Cowrie, Portspoof, Canary Tokens, Spidertrap |
+| [Metasploitable vsftpd Exploit](metasploitable-vsftpd-exploit-lab) | Penetration Testing | Kali Linux, Metasploit, Nmap |
+| [Active Directory Lab](featured-projects/active-directory-lab) | Identity & Access | Windows Server, AD, GPO |
+| [Nmap Reconnaissance](lab1-nmap-reconnaissance/README.md) | Reconnaissance | Nmap, Kali Linux |
+| [TryHackMe Write-ups](tryhackme) | Mixed | Nmap, Burp Suite, ffuf |
+| [Lab Documentation Agent](lab-doc-agent) | Automation / Python | Claude API, Notion API, GitPython |
 
 ---
 
-## 🔗 Connect With Me
+## Education & Certifications
 
-- 💼 [LinkedIn](https://www.linkedin.com/in/tren-patterson)
-- 🐙 [GitHub](https://github.com/trenpatterson-dot)
+- **B.S. Cybersecurity** — Bellevue University *(Expected 2026)*
+- Currently pursuing: **CompTIA Security+**
+- Active on: **TryHackMe** | **OWASP Labs**
 
 ---
 
-> *This repository documents my hands-on cybersecurity learning journey.
-> Each project contains lab write-ups, screenshots, and key takeaways
-> aligned with real-world SOC workflows.*
+## Connect
+
+- [LinkedIn](https://www.linkedin.com/in/tren-patterson)
+- [GitHub](https://github.com/trenpatterson-dot)
+
+---
+
+> Each project contains lab write-ups, screenshots, and key takeaways aligned with real-world SOC workflows.

@@ -16,10 +16,6 @@ Thumbs.db
 *.pdf
 *.drawio
 
-# Images (add your own screenshots)
-*.png
-*.jpg
-*.jpeg
 agent-output/
 portfolio-agent/.env
 .tmp.driveupload/

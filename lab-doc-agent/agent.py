@@ -103,15 +103,81 @@ Lab details:
         "linkedin": f"""
 Write a LinkedIn post about completing this cybersecurity lab.
 
-Style rules — follow every one:
-- Punchy, confident, zero fluff
-- Start with a hook (not "I just completed...")
-- Short paragraphs, max 3 lines each
-- Include 1-2 concrete things learned
-- End with a question OR a call to action
-- 3-5 relevant hashtags at the end
+Voice: Tren Patterson — direct, confident, zero fluff. Write like a sharp professional
+talking to another sharp professional. Blue team / SOC analyst framing throughout.
+
+Structure:
+1. Hook — 1-2 lines max. Bold claim or result. No setup, no wind-up.
+2. What you built / did — 2-4 lines. Tight. Specific.
+3. What you found / learned — 2-4 lines. The interesting part.
+4. Why it matters from a blue team / SOC perspective — 1-3 lines.
+5. Optional clean list of tools used.
+6. 4-6 relevant hashtags at the bottom.
+
+Hard rules — break any of these and the post is wrong:
+- NEVER start with "I just completed", "I'm excited to share", "Thrilled to announce"
+- NEVER end with a question fishing for engagement ("What do you think? Drop a comment!")
+- NEVER use: "passionate", "game-changer", "synergy", "leverage", "dive deep", "journey"
+- No bold text or headers inside the post body
+- Short sentences hit harder — use them, vary the rhythm
 - Max 250 words total
-- No corporate buzzwords, no humble-bragging
+- Line breaks between sections for readability
+
+Lab details:
+{context}
+""",
+        "github_update": f"""
+Write a GitHub README section for this cybersecurity lab.
+
+Audience: developers and technical reviewers scanning a portfolio repo.
+Tone: clean, scannable, factual. No fluff.
+
+Structure:
+- Project title + one-line description
+- Tools used (bulleted list)
+- What this lab demonstrates (skills / scenarios covered)
+- Key findings (what was detected, exploited, or demonstrated — be specific)
+- Setup/usage notes if the lab is replicable
+
+Length: 200-400 words. Use markdown headers and bullets. Hiring managers spend
+30 seconds on READMEs — make every line count.
+
+Lab details:
+{context}
+""",
+        "onenote": f"""
+Write personal reference notes for this cybersecurity lab.
+
+Audience: Tren himself, revisiting this lab weeks or months later.
+Tone: casual, practical, direct. Write like you're leaving notes for yourself.
+
+Structure (use markdown headers):
+- What worked
+- What didn't / gotchas
+- Key commands used (code blocks where relevant)
+- Tools and why each was used
+- What clicked / key insight
+- Next steps or follow-on ideas
+
+Length: as long as needed to be actually useful. No padding, no formal language.
+
+Lab details:
+{context}
+""",
+        "sources": f"""
+List all tools, documentation, CVEs, and external resources relevant to this lab.
+
+Format each entry as: [Name](URL if applicable) — one-line description of what it is
+and how it was used in this lab.
+
+Include:
+- All tools mentioned in the lab details
+- Any CVEs or vulnerabilities exploited or studied
+- Relevant documentation or reference material
+- Platforms used (TryHackMe, HackTheBox, etc.)
+
+If a URL is not known for a tool, omit the link and just list the name and description.
+Keep descriptions tight — one sentence each.
 
 Lab details:
 {context}
@@ -146,6 +212,9 @@ def save_outputs(details: dict, outputs: dict) -> Path:
     (out_dir / "eli10.md").write_text(outputs["eli10"], encoding="utf-8")
     (out_dir / "technical_writeup.md").write_text(outputs["technical"], encoding="utf-8")
     (out_dir / "linkedin_post.md").write_text(outputs["linkedin"], encoding="utf-8")
+    (out_dir / "github_update.md").write_text(outputs["github_update"], encoding="utf-8")
+    (out_dir / "onenote_notes.md").write_text(outputs["onenote"], encoding="utf-8")
+    (out_dir / "sources.md").write_text(outputs["sources"], encoding="utf-8")
     (out_dir / "lab_details.json").write_text(json.dumps(details, indent=2), encoding="utf-8")
 
     print(f"\n  Files saved → {out_dir}")
@@ -168,16 +237,50 @@ def _heading(text: str, level: int = 2) -> dict:
     }
 
 
+def _sanitize_line(line: str) -> str:
+    """Prepare a line for a Notion paragraph block.
+
+    Notion's content filter blocks certain patterns (pipe+tool-name, backtick-wrapped URLs).
+    - Inline code backticks are stripped (Notion paragraphs don't render markdown anyway)
+    - Pipe-table rows are converted to plain text
+    """
+    import re
+    # Strip inline code backticks: `code` → code
+    line = re.sub(r"`([^`]+)`", r"\1", line)
+
+    stripped = line.strip()
+    if stripped.startswith("|") and stripped.endswith("|"):
+        # Table separator row like |---|---|  → skip entirely
+        if all(c in "|-: " for c in stripped):
+            return ""
+        # Data row: | col | val | → col: val
+        cells = [c.strip() for c in stripped[1:-1].split("|")]
+        cells = [c for c in cells if c]
+        if len(cells) == 2:
+            return f"{cells[0]}: {cells[1]}"
+        return "  ".join(cells)
+    return line
+
+
 def _paragraph(text: str) -> list:
-    """Split long text into multiple paragraph blocks (Notion 2000-char limit)."""
+    """Split text into paragraph blocks. Notion rejects newlines in rich_text,
+    so split on newlines first, then wrap long lines at 1900 chars."""
     blocks = []
-    for chunk in textwrap.wrap(text, 1900, break_long_words=False, replace_whitespace=False):
-        blocks.append({
-            "object": "block",
-            "type": "paragraph",
-            "paragraph": {"rich_text": _rich_text(chunk)},
-        })
-    return blocks
+    for raw_line in text.splitlines():
+        line = _sanitize_line(raw_line).strip()
+        if not line:
+            continue
+        for chunk in textwrap.wrap(line, 1900, break_long_words=False) or [line]:
+            blocks.append({
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {"rich_text": _rich_text(chunk)},
+            })
+    return blocks or [{
+        "object": "block",
+        "type": "paragraph",
+        "paragraph": {"rich_text": _rich_text(text[:2000])},
+    }]
 
 
 def _bullet(text: str) -> dict:
@@ -246,7 +349,23 @@ def push_to_notion(details: dict, outputs: dict) -> str:
 
         _heading("LinkedIn Post", 2),
         *_paragraph(outputs["linkedin"]),
+        _divider(),
+
+        _heading("GitHub README", 2),
+        *_paragraph(outputs["github_update"]),
+        _divider(),
+
+        _heading("Personal Notes", 2),
+        *_paragraph(outputs["onenote"]),
+        _divider(),
+
+        _heading("Sources & References", 2),
+        *_paragraph(outputs["sources"]),
     ]
+
+    # Notion limits children to 100 blocks per request
+    BATCH = 100
+    first_batch, remaining = blocks[:BATCH], blocks[BATCH:]
 
     page = notion.pages.create(
         parent={"page_id": page_id},
@@ -255,11 +374,18 @@ def push_to_notion(details: dict, outputs: dict) -> str:
                 "title": _rich_text(f"{details['date']} — {details['lab_name']}")
             }
         },
-        children=blocks,
+        children=first_batch,
     )
 
+    page_id_new = page["id"]
+    for i in range(0, len(remaining), BATCH):
+        notion.blocks.children.append(
+            block_id=page_id_new,
+            children=remaining[i:i + BATCH],
+        )
+
     url = page.get("url", "")
-    print(f"  Notion page created → {url}")
+    print(f"  Notion page created: {url}")
     return url
 
 
@@ -268,30 +394,41 @@ def push_to_notion(details: dict, outputs: dict) -> str:
 # ---------------------------------------------------------------------------
 
 def commit_to_github(out_dir: Path, details: dict) -> bool:
+    import shutil
+    import subprocess
+
     if not GITHUB_REPO_PATH:
         print("  GITHUB_REPO_PATH not set — skipping GitHub commit.")
         return False
 
-    try:
-        repo = Repo(GITHUB_REPO_PATH)
-    except InvalidGitRepositoryError:
+    repo_path = Path(GITHUB_REPO_PATH)
+    if not (repo_path / ".git").exists():
         print(f"  {GITHUB_REPO_PATH} is not a git repo — skipping.")
         return False
 
-    # Copy output folder into the repo under lab-docs/
-    import shutil
-    dest = Path(GITHUB_REPO_PATH) / "lab-doc-agent" / "outputs" / out_dir.name
+    # Copy output folder into the repo under lab-doc-agent/outputs/ (skip if already there)
+    dest = repo_path / "lab-doc-agent" / "outputs" / out_dir.name
     dest.mkdir(parents=True, exist_ok=True)
-    for f in out_dir.iterdir():
-        shutil.copy2(f, dest / f.name)
+    if dest.resolve() != out_dir.resolve():
+        for f in out_dir.iterdir():
+            shutil.copy2(f, dest / f.name)
 
-    repo.index.add([str(dest.relative_to(GITHUB_REPO_PATH)).replace("\\", "/")])
-
+    rel_path = str(dest.relative_to(repo_path)).replace("\\", "/")
     safe_name = re.sub(r"[^\w\-]", "-", details["lab_name"].lower()).strip("-")
     commit_msg = f"Add lab writeup: {safe_name} ({details['date']})"
-    repo.index.commit(commit_msg)
 
-    print(f"  Committed to repo → \"{commit_msg}\"")
+    git_env = {**os.environ, "PYTHONIOENCODING": "utf-8", "GIT_TERMINAL_PROMPT": "0"}
+
+    subprocess.run(
+        ["git", "add", "-f", rel_path],
+        cwd=str(repo_path), check=True, encoding="utf-8", env=git_env,
+    )
+    subprocess.run(
+        ["git", "commit", "-m", commit_msg],
+        cwd=str(repo_path), check=True, encoding="utf-8", env=git_env,
+    )
+
+    print(f"  Committed to repo: \"{commit_msg}\"")
     return True
 
 
@@ -354,6 +491,15 @@ def main():
 
     print("\n--- TECHNICAL WRITEUP ---")
     print(outputs["technical"])
+
+    print("\n--- GITHUB README ---")
+    print(outputs["github_update"])
+
+    print("\n--- PERSONAL NOTES ---")
+    print(outputs["onenote"])
+
+    print("\n--- SOURCES ---")
+    print(outputs["sources"])
 
     print("\n" + "=" * 60)
     print("  ALL DONE")
