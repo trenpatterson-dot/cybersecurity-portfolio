@@ -19,3 +19,11 @@ Thumbs.db
 agent-output/
 portfolio-agent/.env
 .tmp.driveupload/
+
+# supervisor-agent generated artifacts
+**/outputs/
+**/outputs/**
+**/run_metadata.json
+**/*HANDOFF*.md
+*.tmp
+*.temp
