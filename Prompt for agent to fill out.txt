@@ -1,0 +1,47 @@
+Prompt for /lab-doc-agent to fill out
+
+Hey, I just finished a lab. Here's the context:
+
+LAB NAME: 
+PLATFORM: 
+LAB TYPE: (TryHackMe / SIEM-Wazuh-Splunk / Kali-Pentest / Incident Response / Class)
+DATE COMPLETED: 
+OBJECTIVE: 
+TOOLS USED: 
+WHAT I DID (step by step):
+WHAT I FOUND / RESULTS:
+WHAT CLICKED / WHAT I LEARNED:
+DIFFICULTY: (1–5)
+SCREENSHOTS: (today's / specific date / specific files / adding manually)
+TAGS:
+
+#####################################################################################################
+ It's interactive — needs a real terminal, can't run through Claude Code's non-interactive shell.
+
+  Run this in your terminal (PowerShell or cmd):
+
+  cd C:\Users\trenp\supervisor-agent
+
+# All unprocessed labs
+python supervisor.py
+
+# Most recently touched lab
+python supervisor.py --latest
+
+# Specific lab folder
+python supervisor.py C:\Users\trenp\cybersecurity-portfolio\blue-team-labs\threat-hunting-wazuh
+#########################################################################################################
+  Or type this directly in the Claude Code prompt to run it in this session:
+
+  ! python C:\Users\trenp\cybersecurity-portfolio\lab-doc-agent\agent.py
+
+  The ! prefix drops you into an interactive shell where you can answer the questions.
+
+  The workflow that makes sense:
+
+  1. Drop lab context here → I generate + save all 6 files
+  2. You review, make any edits
+  3. ! python publish.py to push when satisfied
+
+  That way you're not skipping the review step by having me push
+  immediately after generating.

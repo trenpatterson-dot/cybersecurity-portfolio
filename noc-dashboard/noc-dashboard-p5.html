@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spectrum Business — NOC Support Dashboard</title>
+  <style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2330;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --blue: #388bfd;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --red: #f85149;
+  --orange: #db6d28;
+  --purple: #a371f7;
+  --ai-bg: #0e1a2e;
+  --ai-border: #1e3a5f;
+  --ai-accent: #58a6ff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: .75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo { font-size: 1.1rem; font-weight: 700; color: var(--blue); letter-spacing: .05em; }
+.subtitle { margin-left: 1rem; color: var(--muted); font-size: .85rem; }
+.header-right { display: flex; gap: 1.5rem; align-items: center; color: var(--muted); font-size: .85rem; }
+.agent-tag { background: var(--surface2); border: 1px solid var(--border); padding: .2rem .6rem; border-radius: 4px; color: var(--text); }
+
+/* ── Layout ── */
+.main-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; padding: 1rem; flex: 1; }
+
+/* ── Panel ── */
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-y: auto; max-height: calc(100vh - 90px); }
+.panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; border-bottom: 1px solid var(--border); padding-bottom: .5rem; }
+.panel-header h2 { font-size: .9rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+
+/* ── Buttons ── */
+button { cursor: pointer; border: none; border-radius: 4px; padding: .3rem .7rem; font-size: .8rem; font-family: inherit; transition: opacity .15s; }
+button:hover { opacity: .85; }
+#new-ticket-btn, #tf-submit { background: var(--blue); color: #fff; }
+#tf-cancel, #modal-close, #rb-close { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+#refresh-btn { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+/* ── Ticket Form ── */
+#ticket-form { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .75rem; margin-bottom: .75rem; display: flex; flex-direction: column; gap: .5rem; }
+#ticket-form input, #ticket-form textarea, #ticket-form select { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); padding: .4rem .6rem; font-family: inherit; font-size: .85rem; width: 100%; }
+#ticket-form textarea { resize: vertical; min-height: 60px; }
+.form-row { display: flex; gap: .5rem; align-items: center; }
+.form-row select { flex: 1; }
+
+/* ── Ticket Cards ── */
+.ticket-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .65rem .75rem; margin-bottom: .5rem; cursor: pointer; transition: border-color .15s; }
+.ticket-card:hover { border-color: var(--blue); }
+.ticket-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: .25rem; }
+.ticket-id { color: var(--muted); font-size: .75rem; font-family: monospace; }
+.ticket-client { font-weight: 600; font-size: .88rem; }
+.ticket-service { color: var(--muted); font-size: .78rem; }
+.ticket-preview { color: var(--muted); font-size: .8rem; margin-top: .2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.badge { font-size: .7rem; font-weight: 700; padding: .15rem .45rem; border-radius: 3px; letter-spacing: .04em; }
+.badge-P1 { background: #3d1012; color: var(--red);    border: 1px solid var(--red); }
+.badge-P2 { background: #2d1a00; color: var(--orange); border: 1px solid var(--orange); }
+.badge-P3 { background: #1d2400; color: var(--yellow); border: 1px solid var(--yellow); }
+.badge-P4 { background: #0d2210; color: var(--green);  border: 1px solid var(--green); }
+
+.status-badge { font-size: .68rem; padding: .1rem .4rem; border-radius: 3px; font-weight: 600; }
+.status-Open      { background:#0e2040; color:var(--blue);   border:1px solid var(--blue); }
+.status-Active    { background:#1a2500; color:var(--yellow); border:1px solid var(--yellow); }
+.status-Escalated { background:#2d1000; color:var(--orange); border:1px solid var(--orange); }
+.status-Resolved  { background:#0a1f0a; color:var(--green);  border:1px solid var(--green); }
+
+/* ── Device Grid ── */
+#device-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.device-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .6rem .75rem; }
+.device-name { font-weight: 600; font-size: .85rem; }
+.device-type { font-size: .75rem; color: var(--muted); margin-bottom: .4rem; }
+.device-status { display: flex; align-items: center; gap: .4rem; font-size: .8rem; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-up   { background: var(--green);  box-shadow: 0 0 5px var(--green); }
+.dot-warn { background: var(--yellow); box-shadow: 0 0 5px var(--yellow); }
+.dot-down { background: var(--red);    box-shadow: 0 0 5px var(--red); }
+.device-meta { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
+
+/* ── Client Records ── */
+.client-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .6rem .75rem; margin-bottom: .5rem; }
+.client-name { font-weight: 600; font-size: .88rem; }
+.client-info { font-size: .78rem; color: var(--muted); margin-top: .2rem; line-height: 1.5; }
+.client-services { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .4rem; }
+.svc-tag { background: var(--bg); border: 1px solid var(--border); border-radius: 3px; font-size: .7rem; padding: .1rem .4rem; color: var(--blue); }
+
+/* ── Runbooks ── */
+.runbook-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .55rem .75rem; margin-bottom: .4rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: border-color .15s; }
+.runbook-item:hover { border-color: var(--purple); }
+.runbook-title { font-size: .85rem; }
+.runbook-arrow { color: var(--muted); }
+
+/* ── Modal ── */
+#modal-overlay, #runbook-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+#modal, #runbook-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; width: 540px; max-height: 85vh; overflow-y: auto; }
+#modal-header { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--border); }
+#modal-body { font-size: .85rem; line-height: 1.7; color: var(--muted); margin-bottom: 1rem; }
+#modal-body strong { color: var(--text); }
+#modal-actions { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+#modal-actions button { padding: .35rem .9rem; }
+.btn-active   { background: var(--yellow); color: #000; }
+.btn-escalate { background: var(--orange); color: #fff; }
+.btn-resolve  { background: var(--green);  color: #000; }
+.btn-note     { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+.note-entry { background: var(--bg); border-left: 3px solid var(--blue); padding: .4rem .6rem; margin-top: .4rem; font-size: .8rem; color: var(--muted); border-radius: 0 4px 4px 0; }
+.note-entry .note-ts { color: var(--blue); font-size: .72rem; display: block; margin-bottom: .15rem; }
+
+#rb-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--purple); }
+#rb-steps { padding-left: 1.2rem; }
+#rb-steps li { font-size: .85rem; color: var(--muted); margin-bottom: .6rem; line-height: 1.6; }
+#rb-steps li strong { color: var(--text); }
+#rb-close { margin-top: 1rem; }
+
+/* ── AI ASSIST STYLES ─────────────────────────────────────── */
+#ai-assist-section {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+#btn-ai-assist {
+  background: linear-gradient(135deg, #1a2a4a, #0e1a2e);
+  border: 1px solid var(--ai-border);
+  color: var(--ai-accent);
+  font-size: .8rem;
+  padding: .4rem 1rem;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  transition: all .2s;
+  width: 100%;
+  justify-content: center;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+#btn-ai-assist:hover {
+  background: linear-gradient(135deg, #1e3460, #122040);
+  box-shadow: 0 0 12px rgba(88,166,255,0.2);
+  opacity: 1;
+}
+#btn-ai-assist:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* AI response panel */
+#ai-response-panel {
+  margin-top: .75rem;
+  background: var(--ai-bg);
+  border: 1px solid var(--ai-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: none;
+}
+
+.ai-panel-header {
+  background: rgba(88,166,255,0.08);
+  border-bottom: 1px solid var(--ai-border);
+  padding: .5rem .9rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .75rem;
+  color: var(--ai-accent);
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.ai-panel-body {
+  padding: .9rem;
+  font-size: .82rem;
+  line-height: 1.75;
+  color: #b0c8e8;
+}
+
+/* Streaming cursor blink */
+.ai-cursor::after {
+  content: '▋';
+  animation: blink .7s step-end infinite;
+  color: var(--ai-accent);
+  margin-left: 1px;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* AI content formatting */
+.ai-panel-body .ai-section-label {
+  display: block;
+  color: var(--ai-accent);
+  font-weight: 700;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: .75rem 0 .3rem;
+}
+.ai-panel-body .ai-section-label:first-child { margin-top: 0; }
+
+.ai-panel-body .ai-step {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: .35rem;
+  color: #b0c8e8;
+}
+.ai-step-num {
+  color: var(--ai-accent);
+  font-weight: 700;
+  min-width: 1.2rem;
+  font-family: monospace;
+}
+
+.ai-panel-body .ai-runbook-tag {
+  display: inline-block;
+  background: rgba(163,113,247,0.15);
+  border: 1px solid rgba(163,113,247,0.4);
+  color: var(--purple);
+  border-radius: 4px;
+  padding: .2rem .5rem;
+  font-size: .75rem;
+  margin-top: .3rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+.ai-runbook-tag:hover { background: rgba(163,113,247,0.28); }
+
+/* Loading animation */
+.ai-thinking {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  color: var(--ai-accent);
+  font-size: .8rem;
+  padding: .5rem 0;
+}
+.ai-thinking-dots span {
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--ai-accent);
+  margin: 0 1px;
+  animation: dot-bounce .9s ease-in-out infinite both;
+}
+.ai-thinking-dots span:nth-child(2) { animation-delay: .15s; }
+.ai-thinking-dots span:nth-child(3) { animation-delay: .3s; }
+@keyframes dot-bounce { 0%,80%,100%{transform:scale(0.6);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+/* ── Utility ── */
+.hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex;align-items:center;">
+      <span class="logo">SPECTRUM BUSINESS</span>
+      <span class="subtitle">NOC Technical Support Dashboard</span>
+    </div>
+    <div class="header-right">
+      <span id="clock"></span>
+      <span class="agent-tag">Agent: T. Renp</span>
+    </div>
+  </header>
+
+  <div class="main-grid">
+
+    <!-- LEFT: Ticket Queue -->
+    <section class="panel" id="ticket-panel">
+      <div class="panel-header">
+        <h2>Ticket Queue</h2>
+        <button id="new-ticket-btn">+ New Ticket</button>
+      </div>
+      <div id="ticket-form" class="hidden">
+        <input id="tf-client" type="text" placeholder="Client Name" />
+        <input id="tf-service" type="text" placeholder="Service (e.g. Fiber, VoIP, Ethernet)" />
+        <textarea id="tf-issue" placeholder="Describe the issue..."></textarea>
+        <div class="form-row">
+          <select id="tf-priority">
+            <option value="P1">P1 — Critical</option>
+            <option value="P2">P2 — High</option>
+            <option value="P3" selected>P3 — Medium</option>
+            <option value="P4">P4 — Low</option>
+          </select>
+          <button id="tf-submit">Submit</button>
+          <button id="tf-cancel">Cancel</button>
+        </div>
+      </div>
+      <div id="ticket-list"></div>
+    </section>
+
+    <!-- CENTER: Network Status -->
+    <section class="panel" id="status-panel">
+      <div class="panel-header">
+        <h2>Network Status Board</h2>
+        <button id="refresh-btn">&#8635; Refresh</button>
+      </div>
+      <div id="device-grid"></div>
+    </section>
+
+    <!-- RIGHT: Client Records + Runbooks -->
+    <section class="panel" id="right-panel">
+      <div class="panel-header"><h2>Client Records</h2></div>
+      <div id="client-list"></div>
+      <div class="panel-header" style="margin-top:1rem;"><h2>Troubleshooting Runbooks</h2></div>
+      <div id="runbook-list"></div>
+    </section>
+
+  </div>
+
+  <!-- Ticket Detail Modal -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal">
+      <div id="modal-header"></div>
+      <div id="modal-body"></div>
+      <div id="modal-actions"></div>
+
+      <!-- ── PROJECT 5: AI ASSIST SECTION ── -->
+      <div id="ai-assist-section">
+        <button id="btn-ai-assist">
+          <span>🤖</span> Analyze with AI
+        </button>
+        <div id="ai-response-panel">
+          <div class="ai-panel-header">
+            <span>⚡</span> AI ASSIST — CLAUDE ANALYSIS
+          </div>
+          <div class="ai-panel-body" id="ai-panel-body"></div>
+        </div>
+      </div>
+
+      <button id="modal-close" style="margin-top:1rem;">Close</button>
+    </div>
+  </div>
+
+  <!-- Runbook Modal -->
+  <div id="runbook-overlay" class="hidden">
+    <div id="runbook-modal">
+      <h2 id="rb-title"></h2>
+      <ol id="rb-steps"></ol>
+      <button id="rb-close">Close</button>
+    </div>
+  </div>
+
+  <script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CLOCK
+// ─────────────────────────────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
+    ' | ' + now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let ticketCounter = 1000;
+let tickets = [];
+let activeTicketId = null;
+
+const seedTickets = [
+  {
+    client: 'Hartwell Medical Group', service: 'Fiber Internet', priority: 'P1', status: 'Escalated',
+    issue: 'Client reports complete loss of internet connectivity at their main campus. All staff affected. EMR system unreachable.',
+    notes: [{ ts: '09:14', text: 'Confirmed signal loss at ONT. Dispatched field tech. Escalated to Transport team.' }]
+  },
+  {
+    client: 'Suncoast Law Partners', service: 'VoIP / SIP Trunking', priority: 'P2', status: 'Active',
+    issue: 'Outbound calls dropping after 90 seconds. Inbound unaffected. Issue began after weekend maintenance window.',
+    notes: [{ ts: '10:02', text: 'Reviewed SIP logs. SIP timer mismatch suspected. Coordinating with Unified Comms team.' }]
+  },
+  {
+    client: 'Orion Logistics LLC', service: 'Managed Network / SD-WAN', priority: 'P3', status: 'Open',
+    issue: 'Secondary WAN link showing degraded throughput. Primary path stable. Client monitoring alerts firing.',
+    notes: []
+  },
+  {
+    client: 'Bayside Hotel & Resorts', service: 'Managed WiFi', priority: 'P3', status: 'Open',
+    issue: 'Guest WiFi portal intermittently failing to authenticate users. Issue reported at Building C only.',
+    notes: []
+  },
+  {
+    client: 'Pinnacle Financial Services', service: 'Ethernet / MPLS', priority: 'P2', status: 'Resolved',
+    issue: 'Latency spike reported between branch offices. Round-trip time elevated from 4ms to 38ms.',
+    notes: [{ ts: '08:30', text: 'Identified congested CE router interface. QoS policy reapplied. Latency normalized. Client confirmed resolution.' }]
+  }
+];
+
+seedTickets.forEach(t => addTicket(t));
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TICKETS
+// ─────────────────────────────────────────────────────────────────────────────
+function addTicket({ client, service, issue, priority, status = 'Open', notes = [] }) {
+  const id = 'TKT-' + (++ticketCounter);
+  const created = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  tickets.unshift({ id, client, service, issue, priority, status, notes, created });
+  renderTickets();
+}
+
+function renderTickets() {
+  const list = document.getElementById('ticket-list');
+  list.innerHTML = '';
+  tickets.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'ticket-card';
+    card.innerHTML = `
+      <div class="ticket-top">
+        <span class="ticket-id">${t.id}</span>
+        <div style="display:flex;gap:.3rem;">
+          <span class="badge badge-${t.priority}">${t.priority}</span>
+          <span class="status-badge status-${t.status}">${t.status}</span>
+        </div>
+      </div>
+      <div class="ticket-client">${t.client}</div>
+      <div class="ticket-service">${t.service} &mdash; <span style="color:#8b949e;font-size:.75rem;">${t.created}</span></div>
+      <div class="ticket-preview">${t.issue}</div>
+    `;
+    card.addEventListener('click', () => openTicketModal(t.id));
+    list.appendChild(card);
+  });
+}
+
+function openTicketModal(id) {
+  const t = tickets.find(x => x.id === id);
+  if (!t) return;
+  activeTicketId = id;
+
+  document.getElementById('modal-header').innerHTML = `
+    <span class="badge badge-${t.priority}" style="margin-right:.5rem;">${t.priority}</span>
+    ${t.id} — ${t.client}
+    <div style="margin-top:.4rem;font-size:.8rem;font-weight:400;color:var(--muted);">${t.service}</div>
+  `;
+
+  renderModalBody(t);
+
+  const actions = document.getElementById('modal-actions');
+  actions.innerHTML = '';
+  if (t.status !== 'Active' && t.status !== 'Resolved')
+    actions.appendChild(makeBtn('Mark Active', 'btn-active', () => changeStatus(id, 'Active')));
+  if (t.status !== 'Escalated' && t.status !== 'Resolved')
+    actions.appendChild(makeBtn('Escalate', 'btn-escalate', () => changeStatus(id, 'Escalated')));
+  if (t.status !== 'Resolved')
+    actions.appendChild(makeBtn('Resolve', 'btn-resolve', () => changeStatus(id, 'Resolved')));
+  actions.appendChild(makeBtn('Add Note', 'btn-note', () => promptNote(id)));
+
+  // Reset AI panel when opening a new ticket
+  resetAiPanel();
+
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+function renderModalBody(t) {
+  const notesHtml = t.notes.map(n =>
+    `<div class="note-entry"><span class="note-ts">${n.ts}</span>${n.text}</div>`
+  ).join('');
+  document.getElementById('modal-body').innerHTML = `
+    <p><strong>Status:</strong> <span class="status-badge status-${t.status}">${t.status}</span></p>
+    <p style="margin-top:.5rem;"><strong>Issue:</strong><br>${t.issue}</p>
+    ${notesHtml ? `<div style="margin-top:.75rem;"><strong>Activity Log:</strong>${notesHtml}</div>` : ''}
+  `;
+}
+
+function makeBtn(label, cls, fn) {
+  const b = document.createElement('button');
+  b.textContent = label;
+  b.className = cls;
+  b.addEventListener('click', fn);
+  return b;
+}
+
+function changeStatus(id, newStatus) {
+  const t = tickets.find(x => x.id === id);
+  if (!t) return;
+  const ts = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  t.status = newStatus;
+  t.notes.push({ ts, text: `Status changed to ${newStatus}.` });
+  renderTickets();
+  openTicketModal(id);
+}
+
+function promptNote(id) {
+  const text = window.prompt('Enter note / update:');
+  if (!text || !text.trim()) return;
+  const t = tickets.find(x => x.id === id);
+  if (!t) return;
+  const ts = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  t.notes.push({ ts, text: text.trim() });
+  renderModalBody(t);
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.add('hidden');
+  activeTicketId = null;
+  renderTickets();
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NEW TICKET FORM
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById('new-ticket-btn').addEventListener('click', () => {
+  document.getElementById('ticket-form').classList.remove('hidden');
+});
+document.getElementById('tf-cancel').addEventListener('click', clearForm);
+document.getElementById('tf-submit').addEventListener('click', () => {
+  const client   = document.getElementById('tf-client').value.trim();
+  const service  = document.getElementById('tf-service').value.trim();
+  const issue    = document.getElementById('tf-issue').value.trim();
+  const priority = document.getElementById('tf-priority').value;
+  if (!client || !service || !issue) { alert('Please fill in all fields.'); return; }
+  addTicket({ client, service, issue, priority });
+  clearForm();
+});
+function clearForm() {
+  ['tf-client','tf-service','tf-issue'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('tf-priority').value = 'P3';
+  document.getElementById('ticket-form').classList.add('hidden');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NETWORK DEVICES
+// ─────────────────────────────────────────────────────────────────────────────
+const devices = [
+  { name: 'Core-RTR-ORL-01', type: 'Core Router',         status: 'up',   meta: 'Cisco ASR 1002X | BGP Active' },
+  { name: 'Core-RTR-ORL-02', type: 'Core Router',         status: 'up',   meta: 'Cisco ASR 1002X | BGP Active' },
+  { name: 'Dist-SW-ORL-01',  type: 'Distribution Switch', status: 'up',   meta: 'Catalyst 9300 | OSPF Area 0' },
+  { name: 'Dist-SW-ORL-02',  type: 'Distribution Switch', status: 'warn', meta: 'Catalyst 9300 | High CPU 87%' },
+  { name: 'Fiber-Node-A1',   type: 'Fiber Node',          status: 'up',   meta: 'Rx: -4.2 dBm | Tx: -1.1 dBm' },
+  { name: 'Fiber-Node-B3',   type: 'Fiber Node',          status: 'down', meta: 'Signal Loss — Fault Active' },
+  { name: 'VoIP-GW-ORL-01',  type: 'VoIP Gateway',        status: 'up',   meta: 'SIP Sessions: 142/500' },
+  { name: 'SDWAN-HUB-01',    type: 'SD-WAN Hub',          status: 'warn', meta: 'Secondary path degraded' },
+  { name: 'WiFi-CTRL-01',    type: 'WiFi Controller',     status: 'up',   meta: 'APs Online: 84/86' },
+  { name: 'MPLS-PE-ORL-01',  type: 'MPLS PE Router',      status: 'up',   meta: 'L3VPN Peers: 12 | Active' },
+];
+
+function renderDevices() {
+  const grid = document.getElementById('device-grid');
+  grid.innerHTML = '';
+  devices.forEach(d => {
+    const dotCls = d.status === 'up' ? 'dot-up' : d.status === 'warn' ? 'dot-warn' : 'dot-down';
+    const label  = d.status === 'up' ? 'Operational' : d.status === 'warn' ? 'Degraded' : 'Down';
+    const card   = document.createElement('div');
+    card.className = 'device-card';
+    card.innerHTML = `
+      <div class="device-name">${d.name}</div>
+      <div class="device-type">${d.type}</div>
+      <div class="device-status"><span class="dot ${dotCls}"></span><span>${label}</span></div>
+      <div class="device-meta">${d.meta}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+document.getElementById('refresh-btn').addEventListener('click', () => {
+  devices.forEach(d => { if (d.status === 'up' && Math.random() < 0.1) d._flash = true; });
+  renderDevices();
+});
+renderDevices();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CLIENT RECORDS
+// ─────────────────────────────────────────────────────────────────────────────
+const clients = [
+  { name: 'Hartwell Medical Group',   contact: 'Mark Yuen — IT Director',    account: 'ENT-004821', services: ['Fiber Internet (1Gbps)', 'Managed Security', 'Unified Communications'], note: 'HIPAA environment. Maintenance windows require 72hr notice.' },
+  { name: 'Suncoast Law Partners',    contact: 'Diane Reyes — Office Manager', account: 'ENT-003317', services: ['SIP Trunking (50 channels)', 'Business TV', 'Ethernet 500M'], note: 'SLA: 4-hour response. Sensitive to call quality issues during business hours.' },
+  { name: 'Orion Logistics LLC',      contact: 'Carlos Webb — Network Admin',  account: 'ENT-005540', services: ['SD-WAN (5 sites)', 'Managed Network', 'Fiber 500M'], note: '24/7 operations. Dual WAN configured for failover.' },
+  { name: 'Bayside Hotel & Resorts',  contact: 'Sandra Kim — IT Manager',     account: 'ENT-007102', services: ['Managed WiFi (86 APs)', 'Fiber 1Gbps', 'Business TV'], note: 'High-density WiFi environment. Guest SSID isolated from corporate.' },
+  { name: 'Pinnacle Financial Services', contact: 'James Ortiz — CISO',       account: 'ENT-002299', services: ['MPLS / L3VPN', 'Ethernet 1Gbps', 'Managed Security'], note: 'PCI-DSS environment. All changes require CISO approval.' },
+];
+
+function renderClients() {
+  const list = document.getElementById('client-list');
+  list.innerHTML = '';
+  clients.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'client-card';
+    card.innerHTML = `
+      <div class="client-name">${c.name}</div>
+      <div class="client-info"><span>${c.contact}</span><br><span>Account: ${c.account}</span><br><span style="font-style:italic;">${c.note}</span></div>
+      <div class="client-services">${c.services.map(s => `<span class="svc-tag">${s}</span>`).join('')}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+renderClients();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RUNBOOKS
+// ─────────────────────────────────────────────────────────────────────────────
+const runbooks = [
+  {
+    title: 'Fiber / ONT Signal Loss',
+    steps: [
+      '<strong>Verify scope:</strong> Confirm whether signal loss is at the ONT, the demarcation point, or further upstream.',
+      '<strong>Check optical levels:</strong> Rx power should be between -8 dBm and -27 dBm. Values outside this range indicate fiber fault.',
+      '<strong>Isolate:</strong> Determine if issue is single-client or affects multiple customers on the same node.',
+      '<strong>Ping test:</strong> Attempt ICMP ping to customer CPE. If no response, confirm no physical layer on ONT.',
+      '<strong>Escalate to Transport:</strong> If fiber fault confirmed, open transport ticket and dispatch field tech.',
+      '<strong>Notify client:</strong> Set expectations with ETA and ticket number. Update every 30 minutes for P1.'
+    ]
+  },
+  {
+    title: 'VoIP / SIP Call Dropping',
+    steps: [
+      '<strong>Gather info:</strong> Direction affected (inbound/outbound/both), duration before drop, affected DIDs, sample call IDs.',
+      '<strong>Review SIP logs:</strong> Look for BYE messages, 408 Timeout, 487 Request Terminated, or missing re-INVITEs.',
+      '<strong>Check timer settings:</strong> SIP session timers must match between client PBX and Spectrum gateway.',
+      '<strong>Firewall/NAT review:</strong> Confirm RTP ports (10000–20000 UDP) and SIP port 5060 are not blocked or NAT\'d incorrectly.',
+      '<strong>QoS verification:</strong> Voice traffic should be marked DSCP EF (46). Confirm QoS policy is applied end-to-end.',
+      '<strong>Coordinate:</strong> If PBX-side, loop in client\'s UC admin. If trunk-side, escalate to Unified Communications team.'
+    ]
+  },
+  {
+    title: 'WAN / Ethernet Link Down',
+    steps: [
+      '<strong>Confirm layer 1:</strong> Check physical link status on CPE and PE router. Look for CRC errors, input errors, or interface flaps.',
+      '<strong>Layer 2 check:</strong> Verify VLAN tagging, encapsulation (dot1q vs. QinQ), and MAC learning on the switch port.',
+      '<strong>Layer 3 check:</strong> Confirm routing protocol (OSPF/BGP) adjacency status. Check if default route is being received.',
+      '<strong>Traffic test:</strong> Run throughput test from Spectrum test endpoint. Compare against committed information rate (CIR).',
+      '<strong>Trace route:</strong> Identify where packets are being dropped. Note any asymmetric routing.',
+      '<strong>Escalate:</strong> If issue is in Spectrum network, open NOC ticket with circuit ID and affected interface.'
+    ]
+  },
+  {
+    title: 'Managed WiFi — Authentication Failure',
+    steps: [
+      '<strong>Scope the issue:</strong> Identify affected SSID (guest vs. corporate), AP locations, and whether issue is intermittent or total failure.',
+      '<strong>Check captive portal:</strong> Verify captive portal controller is reachable and certificate is valid (not expired).',
+      '<strong>RADIUS check:</strong> If using 802.1X, confirm RADIUS server is up. Check shared secret matches on AP and RADIUS.',
+      '<strong>DHCP scope:</strong> Confirm DHCP pool for the SSID is not exhausted. Check lease time and available addresses.',
+      '<strong>AP association logs:</strong> Review controller logs for deauth/disassociation reason codes.',
+      '<strong>Remediate or escalate:</strong> Apply fix if in scope. Otherwise escalate to Managed WiFi team with controller logs.'
+    ]
+  },
+  {
+    title: 'MPLS / VPN Latency Spike',
+    steps: [
+      '<strong>Baseline comparison:</strong> Confirm normal RTT between affected sites. Anything >10ms above baseline warrants investigation.',
+      '<strong>Identify path:</strong> Traceroute between site PEs to identify where delay is introduced.',
+      '<strong>Interface utilization:</strong> Check ingress/egress bandwidth on affected CE and PE interfaces.',
+      '<strong>QoS policy:</strong> Confirm traffic is being classified and queued correctly.',
+      '<strong>Check for re-routing:</strong> Confirm MPLS LSP has not shifted to a longer backup path.',
+      '<strong>Escalate to MPLS team:</strong> Provide circuit IDs, affected sites, traceroute output, and time of onset.'
+    ]
+  },
+  {
+    title: 'Escalation Checklist',
+    steps: [
+      '<strong>Document before escalating:</strong> Capture all troubleshooting steps taken, test results, and timeline.',
+      '<strong>Identify circuit/account:</strong> Include Spectrum circuit ID, account number, and affected service.',
+      '<strong>Determine escalation path:</strong> Transport → fiber/ONT | UC Team → voice/SIP | MPLS Team → routing/VPN | Field Ops → dispatch.',
+      '<strong>Set client expectations:</strong> Communicate escalation status, new point of contact, and updated ETA.',
+      '<strong>Bridge call if P1:</strong> Initiate 3-way bridge with client, escalation team, and yourself for P1 tickets.',
+      '<strong>Own the ticket:</strong> Stay on the ticket even after escalating. You are still the client\'s primary contact.'
+    ]
+  }
+];
+
+function renderRunbooks() {
+  const list = document.getElementById('runbook-list');
+  list.innerHTML = '';
+  runbooks.forEach((rb, i) => {
+    const item = document.createElement('div');
+    item.className = 'runbook-item';
+    item.innerHTML = `<span class="runbook-title">${rb.title}</span><span class="runbook-arrow">&#8250;</span>`;
+    item.addEventListener('click', () => openRunbook(i));
+    list.appendChild(item);
+  });
+}
+
+function openRunbook(i) {
+  const rb = runbooks[i];
+  document.getElementById('rb-title').textContent = rb.title;
+  const ol = document.getElementById('rb-steps');
+  ol.innerHTML = rb.steps.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('runbook-overlay').classList.remove('hidden');
+}
+document.getElementById('rb-close').addEventListener('click', () => {
+  document.getElementById('runbook-overlay').classList.add('hidden');
+});
+renderRunbooks();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROJECT 5 — AI ASSIST
+// ─────────────────────────────────────────────────────────────────────────────
+
+function resetAiPanel() {
+  const panel = document.getElementById('ai-response-panel');
+  const body  = document.getElementById('ai-panel-body');
+  panel.style.display = 'none';
+  body.innerHTML = '';
+  const btn = document.getElementById('btn-ai-assist');
+  btn.disabled = false;
+  btn.innerHTML = '<span>🤖</span> Analyze with AI';
+}
+
+document.getElementById('btn-ai-assist').addEventListener('click', async () => {
+  if (!activeTicketId) return;
+  const t = tickets.find(x => x.id === activeTicketId);
+  if (!t) return;
+
+  const btn   = document.getElementById('btn-ai-assist');
+  const panel = document.getElementById('ai-response-panel');
+  const body  = document.getElementById('ai-panel-body');
+
+  // UI: loading state
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Analyzing...';
+  panel.style.display = 'block';
+  body.innerHTML = `
+    <div class="ai-thinking">
+      <div class="ai-thinking-dots">
+        <span></span><span></span><span></span>
+      </div>
+      Claude is reviewing the ticket...
+    </div>
+  `;
+
+  // Build the runbook titles list for Claude's context
+  const runbookTitles = runbooks.map((rb, i) => `${i}: ${rb.title}`).join('\n');
+
+  const prompt = `You are a NOC support AI assistant for Spectrum Business, a telecom provider.
+You help network operations center technicians quickly diagnose issues and take action.
+
+TICKET INFORMATION:
+- Ticket ID: ${t.id}
+- Client: ${t.client}
+- Service: ${t.service}
+- Priority: ${t.priority}
+- Current Status: ${t.status}
+- Issue Description: ${t.issue}
+${t.notes.length > 0 ? `- Activity Log: ${t.notes.map(n => `[${n.ts}] ${n.text}`).join(' | ')}` : ''}
+
+AVAILABLE RUNBOOKS (by index number):
+${runbookTitles}
+
+Respond in this exact format with no markdown, no asterisks, no extra formatting:
+
+DIAGNOSIS
+[1-2 sentences: what is likely happening based on the service and issue description]
+
+NEXT STEPS
+1. [First action the tech should take right now]
+2. [Second action]
+3. [Third action]
+4. [Fourth action if needed, otherwise stop at 3]
+
+RECOMMENDED RUNBOOK
+[index number]: [runbook title]
+
+ESCALATION NOTE
+[One sentence: when and to whom to escalate if steps above don't resolve it]`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'API error');
+    }
+
+    const raw = data.content?.[0]?.text || '';
+    renderAiResponse(raw, body, btn);
+
+  } catch (err) {
+    body.innerHTML = `<span style="color:var(--red);">⚠ Error: ${err.message}</span>`;
+    btn.disabled = false;
+    btn.innerHTML = '<span>🤖</span> Retry Analysis';
+  }
+});
+
+function renderAiResponse(raw, body, btn) {
+  // Parse sections from Claude's structured response
+  const sections = {
+    diagnosis:   extractSection(raw, 'DIAGNOSIS'),
+    nextSteps:   extractSection(raw, 'NEXT STEPS'),
+    runbook:     extractSection(raw, 'RECOMMENDED RUNBOOK'),
+    escalation:  extractSection(raw, 'ESCALATION NOTE'),
+  };
+
+  let html = '';
+
+  if (sections.diagnosis) {
+    html += `<span class="ai-section-label">📋 Diagnosis</span>`;
+    html += `<p style="color:#c8ddf0;margin-bottom:.5rem;">${sections.diagnosis}</p>`;
+  }
+
+  if (sections.nextSteps) {
+    html += `<span class="ai-section-label">⚡ Recommended Next Steps</span>`;
+    const lines = sections.nextSteps.split('\n').filter(l => l.trim());
+    lines.forEach(line => {
+      const match = line.match(/^(\d+)\.\s+(.+)/);
+      if (match) {
+        html += `<div class="ai-step"><span class="ai-step-num">${match[1]}.</span><span>${match[2]}</span></div>`;
+      }
+    });
+  }
+
+  if (sections.runbook) {
+    html += `<span class="ai-section-label">📖 Suggested Runbook</span>`;
+    // Try to extract runbook index and open it on click
+    const idxMatch = sections.runbook.match(/^(\d+)/);
+    const rbIndex  = idxMatch ? parseInt(idxMatch[1]) : null;
+    const rbLabel  = sections.runbook.replace(/^\d+:\s*/, '').trim() || sections.runbook;
+    const clickAttr = (rbIndex !== null && runbooks[rbIndex])
+      ? `onclick="openRunbook(${rbIndex})"` : '';
+    html += `<span class="ai-runbook-tag" ${clickAttr} title="${clickAttr ? 'Click to open' : ''}">📖 ${rbLabel} ${clickAttr ? '↗' : ''}</span>`;
+  }
+
+  if (sections.escalation) {
+    html += `<span class="ai-section-label" style="margin-top:.75rem;">🚨 Escalation Guidance</span>`;
+    html += `<p style="color:#b0c8e8;">${sections.escalation}</p>`;
+  }
+
+  // Fallback: just show raw text if parsing fails
+  if (!html.trim()) {
+    html = `<p style="white-space:pre-wrap;color:#b0c8e8;">${raw}</p>`;
+  }
+
+  body.innerHTML = html;
+  btn.disabled = false;
+  btn.innerHTML = '<span>🔄</span> Re-analyze';
+}
+
+function extractSection(text, heading) {
+  // Match heading followed by content until the next all-caps heading or end
+  const regex = new RegExp(heading + '\\s*\\n([\\s\\S]*?)(?=\\n[A-Z][A-Z ]+\\n|$)');
+  const match = text.match(regex);
+  return match ? match[1].trim() : '';
+}
+  </script>
+</body>
+</html>

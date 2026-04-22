@@ -1,5 +1,14 @@
 # affiliate-content-agent
 
+## Archive Status
+
+This copy is retained only as an archived portfolio snapshot.
+
+Active development should happen in:
+`C:\Users\trenp\affiliate-content-agent`
+
+That standalone project now contains the consolidated workflow, docs, tests, and Creators API scaffold that used to be split across both copies.
+
 Beginner-friendly affiliate content workflow project with:
 - product loading
 - draft generation

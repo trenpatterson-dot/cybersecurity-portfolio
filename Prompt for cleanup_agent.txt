@@ -1,0 +1,10 @@
+Prompt for cleanup_agent
+
+# See what would be removed (safe, nothing deleted)
+python cleanup_agent.py
+
+# Remove with confirmation per category
+python cleanup_agent.py --clean
+
+# Remove everything without prompting
+python cleanup_agent.py --auto

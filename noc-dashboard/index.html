@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spectrum Business — NOC Support Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <span class="logo">SPECTRUM BUSINESS</span>
+      <span class="subtitle">NOC Technical Support Dashboard</span>
+    </div>
+    <div class="header-right">
+      <span id="clock"></span>
+      <span class="agent-tag">Agent: T. Renp</span>
+    </div>
+  </header>
+
+  <div class="main-grid">
+
+    <!-- LEFT: Ticket Queue -->
+    <section class="panel" id="ticket-panel">
+      <div class="panel-header">
+        <h2>Ticket Queue</h2>
+        <button id="new-ticket-btn">+ New Ticket</button>
+      </div>
+
+      <!-- New Ticket Form -->
+      <div id="ticket-form" class="hidden">
+        <input id="tf-client" type="text" placeholder="Client Name" />
+        <input id="tf-service" type="text" placeholder="Service (e.g. Fiber, VoIP, Ethernet)" />
+        <textarea id="tf-issue" placeholder="Describe the issue..."></textarea>
+        <div class="form-row">
+          <select id="tf-priority">
+            <option value="P1">P1 — Critical</option>
+            <option value="P2">P2 — High</option>
+            <option value="P3" selected>P3 — Medium</option>
+            <option value="P4">P4 — Low</option>
+          </select>
+          <button id="tf-submit">Submit</button>
+          <button id="tf-cancel">Cancel</button>
+        </div>
+      </div>
+
+      <div id="ticket-list"></div>
+    </section>
+
+    <!-- CENTER: Network Status -->
+    <section class="panel" id="status-panel">
+      <div class="panel-header">
+        <h2>Network Status Board</h2>
+        <button id="refresh-btn">&#8635; Refresh</button>
+      </div>
+      <div id="device-grid"></div>
+    </section>
+
+    <!-- RIGHT: Client Records + Runbooks -->
+    <section class="panel" id="right-panel">
+
+      <div class="panel-header">
+        <h2>Client Records</h2>
+      </div>
+      <div id="client-list"></div>
+
+      <div class="panel-header" style="margin-top:1.5rem;">
+        <h2>Troubleshooting Runbooks</h2>
+      </div>
+      <div id="runbook-list"></div>
+
+    </section>
+
+  </div>
+
+  <!-- Ticket Detail Modal -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal">
+      <div id="modal-header"></div>
+      <div id="modal-body"></div>
+      <div id="modal-actions"></div>
+      <button id="modal-close">Close</button>
+    </div>
+  </div>
+
+  <!-- Runbook Modal -->
+  <div id="runbook-overlay" class="hidden">
+    <div id="runbook-modal">
+      <h2 id="rb-title"></h2>
+      <ol id="rb-steps"></ol>
+      <button id="rb-close">Close</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
