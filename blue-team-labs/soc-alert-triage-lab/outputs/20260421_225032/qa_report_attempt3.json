@@ -1,0 +1,30 @@
+{
+  "passed": false,
+  "issues": [
+    {
+      "output": "readme",
+      "check": "SCREENSHOT INTEGRITY",
+      "detail": "Referenced screenshot does not exist: screenshots/02-failed-login-raw-event.png"
+    },
+    {
+      "output": "readme",
+      "check": "SCREENSHOT INTEGRITY",
+      "detail": "Referenced screenshot does not exist: screenshots/03-repeated-failed-logins-filtered.png"
+    },
+    {
+      "output": "readme",
+      "check": "SCREENSHOT INTEGRITY",
+      "detail": "Referenced screenshot does not exist: screenshots/04-alert-fields-source-user-host-time.png"
+    },
+    {
+      "output": "readme",
+      "check": "SCREENSHOT INTEGRITY",
+      "detail": "Referenced screenshot does not exist: screenshots/01-wazuh-alert-overview.png"
+    }
+  ],
+  "revision_notes": {
+    "readme": "Remove or correct screenshot references so every referenced file exists."
+  },
+  "secrets_found": false,
+  "confidence": "medium"
+}

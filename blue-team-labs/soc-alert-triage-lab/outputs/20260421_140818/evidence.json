@@ -1,0 +1,102 @@
+{
+  "tools_used": [
+    "wazuh"
+  ],
+  "commands_seen": [],
+  "indicators_found": {
+    "ips": [
+      "192.168.32.128"
+    ],
+    "domains": [
+      "01-wazuh-alert-overview.png",
+      "02-failed-login-raw-event.png",
+      "03-repeated-failed-logins-filtered.png",
+      "04-alert-fields-source-user-host-time.png",
+      "HANDOFF.md",
+      "README.md",
+      "eli10.md",
+      "findings.md",
+      "github-update.md",
+      "linkedin-post.md",
+      "onenote-notes.md",
+      "technical-summary.md"
+    ],
+    "hashes": [],
+    "usernames": [],
+    "cves": [],
+    "other": []
+  },
+  "findings": [
+    {
+      "finding": "Simulated repeated failed SSH login attempts from Kali Linux to Ubuntu Wazuh server",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "Goal was to perform SOC-style alert triage using Wazuh SIEM",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "Environment included Wazuh manager (Ubuntu) and attacker machine (Kali Linux)",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "9 failed SSH login attempts detected",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "Source IP: 192.168.32.128",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "Target Host: tren (Ubuntu)",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "Username attempted: fakeuser",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "No successful login observed",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "Rule ID: 2502 triggered (Severity 10)",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "MITRE ATT&CK: T1110 (Brute Force)",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "01-wazuh-alert-overview.png",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "02-failed-login-raw-event.png",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "03-repeated-failed-logins-filtered.png",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "04-alert-fields-source-user-host-time.png",
+      "significance": "Documented in source material"
+    },
+    {
+      "finding": "Screenshots: Completed",
+      "significance": "Documented in source material"
+    }
+  ],
+  "sequence_of_actions": [
+    "Fixed Wazuh API connectivity issue",
+    "Verified Wazuh manager and dashboard functionality",
+    "Configured SSH on Ubuntu target",
+    "Fixed VM networking (host-only configuration)",
+    "Generated failed SSH login attempts from Kali Linux",
+    "Captured Wazuh alerts for authentication failures",
+    "Investigated alert details and extracted evidence",
+    "Classified activity as benign true positive"
+  ],
+  "screenshots": []
+}
