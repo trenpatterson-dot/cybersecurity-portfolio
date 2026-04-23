@@ -1,0 +1,19 @@
+Project: Threat Hunting - Brute Force Detection
+
+Findings:
+- ~10 failed login attempts
+- Same user: fakeuser
+- Same host: localhost
+- Rapid execution (seconds apart)
+
+Key logs:
+- Attempt to login using non-existent user
+- Maximum authentication attempts exceeded
+- Brute force trying to get access to system
+
+Conclusion:
+Confirmed brute force behavior
+
+Next steps:
+- Monitor authentication activity
+- Implement lockout controls
