@@ -1,0 +1,4 @@
+sudo
+authentication
+failed
+rule.level:[7 TO 11]

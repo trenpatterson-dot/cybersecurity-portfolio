@@ -1,0 +1,17 @@
+Project: SOC Alert Investigation End-to-End
+
+Wazuh event investigated:
+- Successful sudo to ROOT executed
+
+Key details:
+- User: tren
+- Target user: root
+- Command: /usr/sbin/setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap
+- Rule ID: 5402
+- Rule level: 3
+- Fired times: 6
+- Working directory: /home/tren
+- Terminal: pts/0
+
+Analyst note:
+This appears consistent with packet capture tool configuration, but it still represents privileged activity that should be validated.
