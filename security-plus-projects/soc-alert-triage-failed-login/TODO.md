@@ -1,0 +1,22 @@
+# TODO
+
+- [x] Create project folder structure
+- [x] Create starter markdown files
+- [x] Add alert source and platform details from completed Wazuh labs
+- [x] Add environment details supported by source files
+- [x] Add source and destination information supported by source files
+- [x] Add usernames, hosts, and detection metadata supported by source files
+- [x] Add Wazuh Rule ID `2502` from SOC alert triage technical source
+- [x] Add Wazuh Rule ID `5760` from SSH brute force incident report
+- [x] Add Wazuh Rule ID `5763` as supported by Wazuh threat-hunting source and incident report remediation guidance
+- [x] Add MITRE ATT&CK brute force / password guessing mapping supported by source files
+- [x] Add supported remediation guidance from the incident report
+- [x] Complete `docs/analysis.md`
+- [x] Complete `docs/findings.md`
+- [x] Complete `docs/timeline.md`
+- [x] Complete `evidence/commands/commands-used.md` with only documented commands, filters, and analysis actions
+- [x] Tighten `README.md` into portfolio-ready Security+ project copy
+- [ ] Copy selected source screenshots into `docs/images/` if this project should be fully self-contained
+- [ ] Add exact timestamps for the primary `fakeuser` Wazuh alert if they are later found
+- [ ] Add the exact command used to generate the primary 9 failed SSH attempts if it is later found
+- [ ] Final review after screenshot selection
