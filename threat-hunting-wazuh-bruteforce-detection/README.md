@@ -30,3 +30,14 @@ The detected brute force attack poses a potential security risk by attempting to
 
 ## MITRE ATT&CK Mapping
 - T1110: Brute Force
+
+## 📸 Evidence
+
+### Failed Login Activity
+![Failed Login Activity](evidence/screenshots/01-failed-logins.png)
+
+### Pattern Detection
+![Pattern Detection](evidence/screenshots/02-pattern-detection.png)
+
+### Event Details
+![Event Details](evidence/screenshots/03-event-details.png)
