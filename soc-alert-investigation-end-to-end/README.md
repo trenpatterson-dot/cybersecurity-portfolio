@@ -1,34 +1,111 @@
-# Soc Alert Investigation End To End
+# SOC Alert Investigation — Privilege Escalation via Sudo (Wazuh)
 
-## Overview
-A comprehensive investigation into a potential security incident within a Ubuntu Linux Virtual Machine (VM) using the Wazuh platform for threat hunting and event analysis.
+## 🚨 What This Project Shows
+This project demonstrates real SOC analyst workflow:
+- Investigating SIEM alerts (Wazuh)
+- Analyzing Linux authentication + privilege escalation logs
+- Interpreting command-level behavior (not just alert labels)
+- Making a risk-based decision with supporting evidence
 
-## Objective
-The objective of this exercise was to investigate an alert related to privileged activity on the target system, specifically a successful sudo execution to root level.
+This is not just alert triage — this is **analysis and validation**.
 
-## Tools Used
-- Wireshark
-- Wazuh
+---
 
-## Environment / Lab Setup
-The lab environment consisted of a Ubuntu Linux VM hosting a browser-based Wazuh dashboard, which was accessed from a laptop browser for threat hunting and event analysis.
+## 🧠 Scenario
+While reviewing Wazuh events, I identified repeated sudo activity tied to privilege escalation.
 
-## Investigation Steps
-1. Accessed the Wazuh dashboard hosted on the Ubuntu VM from my laptop browser.
-2. Opened Threat Hunting and moved from the dashboard view into the Events view.
-3. Reviewed available event data and tested filtering for medium-level alerts.
-4. Determined there were no medium alerts currently available and pivoted to low-level event review.
-5. Identified repeated privileged activity tied to sudo execution.
-6. Expanded the event details to review the exact command, user, target account, terminal, and working directory.
-7. Assessed whether the activity looked legitimate or potentially suspicious.
-8. Investigated the alert: Successful sudo to ROOT executed.
-9. Main finding: User `tren` used sudo to assign network capture capabilities to `dumpcap`.
+Instead of filtering for high-severity alerts only, I:
+- Pivoted to raw event analysis
+- Identified repeated behavior patterns
+- Investigated command-level activity
 
-## Key Findings
-- User `tren` used sudo to assign network capture capabilities to `dumpcap`, potentially indicating an attempt to investigate or further analyze the system.
+---
 
-## Security Impact
-The security impact of this finding is moderate, as it indicates that a user has elevated privileges and may have access to sensitive information or system components. However, without additional context or evidence, it's difficult to determine the full extent of potential damage or compromise.
+## 🔍 What I Found
 
-## MITRE ATT&CK Mapping
-- Technique: Privilege Escalation (T1078) - Command and Scripting Interpreter: Abuse Execution with sudo
+A user (`tren`) executed the following command multiple times:/usr/sbin/setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap
+
+### Key observations:
+- Privilege escalation: user → root
+- Command modifies binary capabilities
+- Repeated execution (`firedtimes: 6`)
+- Executed from user home directory
+
+---
+
+## ⚠️ Why This Matters
+
+This action enables packet capture **without requiring root privileges** later.
+
+### This can be:
+- ✅ Legitimate → configuring Wireshark / network analysis tools  
+- ⚠️ Risky → enabling network sniffing or credential capture  
+
+---
+
+## 🧠 Analyst Decision
+
+No direct malicious indicators were observed.
+
+However:
+- Privilege escalation occurred
+- Binary capabilities were modified
+- Behavior could support post-exploitation activity
+
+### 👉 Conclusion:
+**Low–Medium risk — requires validation and monitoring**
+
+---
+
+## 🛠️ What I Would Do Next
+
+- Validate user intent (legitimate setup vs unauthorized change)
+- Confirm presence of packet capture tools (Wireshark, etc.)
+- Monitor for:
+  - unusual network traffic capture
+  - repeated sudo activity
+  - credential harvesting behavior
+
+---
+
+## 🧩 MITRE ATT&CK Mapping
+
+- Privilege Escalation  
+- Defense Evasion  
+- Credential Access (potential)  
+- Network Sniffing (potential)  
+
+---
+
+## 📸 Evidence
+
+Located in:evidence/screenshots/
+
+- `01-alert-overview.png`
+- `02-alert-details.png`
+
+---
+
+## ⚙️ Tools Used
+
+- Wazuh (SIEM)
+- Ubuntu Linux VM
+- Wazuh Threat Hunting (Events view)
+
+---
+
+## 💡 What This Project Proves
+
+- I don’t rely on alert severity — I investigate behavior
+- I can break down Linux logs and commands
+- I understand privilege escalation beyond surface-level alerts
+- I can explain risk in a way that supports decision-making
+
+---
+
+## 🚀 Author
+
+**Tren Patterson**  
+Aspiring SOC Analyst | Blue Team | Threat Detection  
+
+---
