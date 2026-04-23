@@ -27,3 +27,5 @@ portfolio-agent/.env
 **/*HANDOFF*.md
 *.tmp
 *.temp
+linkedin-drafts/
+*-linkedin.md
