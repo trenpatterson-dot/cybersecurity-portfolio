@@ -1,28 +1,37 @@
 # Suspicious Network Traffic Investigation
 
 ## Overview
-This lab is a Detection Engineering exercise focused on investigating suspicious network traffic under standalone conditions. The project, titled **Suspicious Network Traffic Investigation**, documents an in-depth analysis of potential security threats and provides insights into effective cybersecurity practices.
+This project is a reconnaissance exercise focused on investigating suspicious network traffic, using tools such as nmap and Wireshark. The objective is to identify potential threats and understand the behavior of the observed traffic.
 
-## Objectives
-The primary objective of this lab is to identify, analyze, and classify potentially malicious network traffic based on traffic or alert triggers, evidence reviewed, standout patterns, and the classification of the activity.
+## Objective
+The goal of this investigation was to analyze network traffic between IP addresses 192.168.32.128 (source) and a target system, with a focus on understanding the protocols in use, open ports, and services running on the target system.
 
 ## Tools Used
-- Wireshark (for packet capture and analysis)
-- Cisco Packet Tracer (for network simulation and traffic generation)
-- Notepad++ (for documenting findings and steps performed)
+- nmap
+- Wireshark
 
-## Steps Performed
-1. Reviewed `HANDOFF.md` for current status.
-2. Checked `TODO.md` for the next open tasks.
-3. Conducted a thorough analysis of the suspicious network traffic using Wireshark and Cisco Packet Tracer.
-4. Documented real alert data, packet/log evidence, timestamps, screenshots, and commands in Notepad++.
-5. Tightened the README after the evidence and findings were complete.
+## Environment / Lab Setup
+This investigation was conducted in a standalone environment, with the specific details of the network setup not provided in the evidence.
+
+## Investigation Steps
+1. Reviewed the original alert or log source to initiate the investigation.
+2. Identified the source IP (192.168.32.128), destination IP, protocols, open ports, and timestamps from the evidence.
+3. Confirmed the traffic volume and timing through Wireshark packet captures.
+4. Checked whether the activity matched expected behavior for the environment.
 
 ## Key Findings
-- The investigation was triggered by an unusual spike in outbound traffic from a specific IP address (192.168.1.10) to a known malicious domain (maliciousdomain.com).
-- Reviewed network logs and packet captures revealed multiple instances of encrypted communication using the HTTPS protocol on port 443, which is unusual for this network environment.
-- The analyzed traffic pattern exhibited signs of Command and Control (C2) activity, indicating potential remote access by an unauthorized third party.
-- Classified the activity as a potential security threat due to the observed behavior and the known malicious domain involved.
+- Nmap scan output identified SSH and HTTPS services on the target system.
+- Wireshark packet captures revealed a SYN scan, RST responses, ICMP connectivity validation, TCP SYN scan from 192.168.32.128, and active HTTPS service via TLSv1.3 handshake.
+- The target system responded with both open and closed port behavior.
 
-## Lessons Learned
-This lab reinforced the importance of monitoring network traffic for unusual patterns and the need to investigate potential security threats promptly. It also highlighted the significance of using various tools in a coordinated manner to ensure comprehensive analysis and accurate threat classification.
+## Security Impact
+The findings suggest that the observed traffic may be a reconnaissance attempt, as the attacker is probing for open ports and services on the target system.
+
+## Screenshots
+- [01-nmap-command.png](docs/images/01-nmap-command.png)
+- [02-wireshark-overview.png](docs/images/02-wireshark-overview.png)
+- [03-syn-scan-evidence.png](docs/images/03-syn-scan-evidence.png)
+- [04-port-response-evidence.png](docs/images/04-port-response-evidence.png)
+- [05-target-ip-traffic.png](docs/images/05-target-ip-traffic.png)
+- [06-service-detection-evidence.png](docs/images/06-service-detection-evidence.png)
+
