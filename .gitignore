@@ -29,3 +29,14 @@ portfolio-agent/.env
 *.temp
 linkedin-drafts/
 *-linkedin.md
+linkedin-drafts/
+*-linkedin.md
+api.txt
+.env
+.env.*
+linkedin-drafts/
+*-linkedin.md
+api.txt
+.env
+.env.*
+outputs/
