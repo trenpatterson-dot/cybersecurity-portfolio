@@ -1,35 +1,27 @@
 # System Security Event Analysis (Wazuh)
 
 ## Overview
-This lab presents an investigation into system security events using the Wazuh platform. The objective was to analyze event logs, identify potential security issues, and create a report detailing our findings.
+This lab is a GitHub-safe summary of a Wazuh-based review of system security events. The public version is limited to a high-level workflow description because this folder does not include raw alerts, screenshots, or exported reports.
 
 ## Objective
-The primary goal of this exercise was to perform a comprehensive analysis of system events using Wazuh, with a focus on authentication activities and CIS benchmark alerts related to the system's security posture.
+The goal of the exercise was to review system-event activity in Wazuh with attention to authentication events and host-security alerts, then document the investigation approach in a public-safe format.
 
 ## Tools Used
 - Wazuh
 
 ## Environment / Lab Setup
-The investigation was conducted within a controlled lab environment using the Wazuh platform for event log analysis. Details about the specific source, target IPs, hostnames, usernames, ports, protocols, scan type, rule IDs, and timestamps are not available in the provided evidence.
+The analysis was performed in a controlled lab environment using the Wazuh Events view. This README does not include host-specific evidence such as agent names, timestamps, rule IDs, or exported event records.
 
 ## Investigation Steps
-1. Accessed Wazuh Events view for system log analysis.
-2. Filtered events by agent and timeframe.
-3. Identified authentication activity and system events.
-4. Analyzed CIS benchmark alerts related to security posture.
+1. Opened the Wazuh Events view for system log review.
+2. Filtered events by relevant system activity and timeframe.
+3. Reviewed authentication-related events and other host-security alerts surfaced in Wazuh.
+4. Documented the investigation scope in a GitHub-safe summary.
 
-## Key Findings
-- Event analysis performed.
-- Screenshots captured.
-- README, investigation, and findings created.
-- Evidence suggests that the CIS benchmark score is below 50%.
+## Public-Safe Findings
+- Wazuh was used to review system-event activity in a controlled lab setting.
+- The investigation focused on authentication activity and host-security alert visibility.
+- This repository folder currently preserves only a public summary, not the supporting raw evidence.
 
-## Security Impact
-The low CIS benchmark score indicates that the system may not meet security hardening standards, posing a medium risk.
-
-## MITRE ATT&CK Mapping
-Due to insufficient evidence, no MITRE ATT&CK techniques could be mapped in this investigation.
-
-## Revision Needed
-- Command history is missing from the evidence.
-- Additional screenshots are needed to support the findings.
+## Security Notes
+This README intentionally avoids assigning a specific risk rating or quantitative security score because supporting evidence is not included in this folder.
