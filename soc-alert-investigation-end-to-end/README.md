@@ -1,111 +1,30 @@
-# SOC Alert Investigation — Privilege Escalation via Sudo (Wazuh)
+# SOC Alert Investigation: Privilege Escalation via Sudo
 
-## 🚨 What This Project Shows
-This project demonstrates real SOC analyst workflow:
-- Investigating SIEM alerts (Wazuh)
-- Analyzing Linux authentication + privilege escalation logs
-- Interpreting command-level behavior (not just alert labels)
-- Making a risk-based decision with supporting evidence
+## Overview
+End-to-end SOC alert investigation in Wazuh focused on Linux sudo activity, privilege escalation context, and risk-based analyst decision-making.
 
-This is not just alert triage — this is **analysis and validation**.
+## What I Did
+- Reviewed Wazuh events instead of relying only on alert severity.
+- Pivoted from dashboard review into raw event details.
+- Investigated repeated sudo activity tied to privilege escalation.
+- Examined the exact command, user, target account, terminal, and working directory.
+- Assessed whether the behavior looked legitimate, suspicious, or required validation.
 
----
+## Key Findings
+- A lab user executed sudo activity that assigned network capture capabilities to `dumpcap`.
+- The command modified binary capabilities for packet capture use.
+- The activity involved privilege escalation from user context to root-level action.
+- No direct malicious indicator was documented in the available evidence.
+- The behavior could be legitimate Wireshark setup, but it still deserves validation and monitoring.
 
-## 🧠 Scenario
-While reviewing Wazuh events, I identified repeated sudo activity tied to privilege escalation.
+## Security Impact
+Granting packet capture capabilities can be legitimate for network analysis, but it can also support credential capture or unauthorized traffic inspection if abused. A SOC analyst should validate intent, monitor related activity, and document the risk clearly.
 
-Instead of filtering for high-severity alerts only, I:
-- Pivoted to raw event analysis
-- Identified repeated behavior patterns
-- Investigated command-level activity
-
----
-
-## 🔍 What I Found
-
-A user (`tren`) executed the following command multiple times:/usr/sbin/setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap
-
-### Key observations:
-- Privilege escalation: user → root
-- Command modifies binary capabilities
-- Repeated execution (`firedtimes: 6`)
-- Executed from user home directory
-
----
-
-## ⚠️ Why This Matters
-
-This action enables packet capture **without requiring root privileges** later.
-
-### This can be:
-- ✅ Legitimate → configuring Wireshark / network analysis tools  
-- ⚠️ Risky → enabling network sniffing or credential capture  
-
----
-
-## 🧠 Analyst Decision
-
-No direct malicious indicators were observed.
-
-However:
-- Privilege escalation occurred
-- Binary capabilities were modified
-- Behavior could support post-exploitation activity
-
-### 👉 Conclusion:
-**Low–Medium risk — requires validation and monitoring**
-
----
-
-## 🛠️ What I Would Do Next
-
-- Validate user intent (legitimate setup vs unauthorized change)
-- Confirm presence of packet capture tools (Wireshark, etc.)
-- Monitor for:
-  - unusual network traffic capture
-  - repeated sudo activity
-  - credential harvesting behavior
-
----
-
-## 🧩 MITRE ATT&CK Mapping
-
-- Privilege Escalation  
-- Defense Evasion  
-- Credential Access (potential)  
-- Network Sniffing (potential)  
-
----
-
-## 📸 Evidence
-
-Located in:evidence/screenshots/
-
-- `01-alert-overview.png`
-- `02-alert-details.png`
-
----
-
-## ⚙️ Tools Used
-
-- Wazuh (SIEM)
+## Tools Used
+- Wazuh
 - Ubuntu Linux VM
-- Wazuh Threat Hunting (Events view)
+- Linux authentication and sudo logs
+- Wazuh Threat Hunting Events view
 
----
-
-## 💡 What This Project Proves
-
-- I don’t rely on alert severity — I investigate behavior
-- I can break down Linux logs and commands
-- I understand privilege escalation beyond surface-level alerts
-- I can explain risk in a way that supports decision-making
-
----
-
-## 🚀 Author
-
-**Tren Patterson**  
-Aspiring SOC Analyst | Blue Team | Threat Detection  
-
----
+## Outcome
+The project demonstrates end-to-end SOC reasoning: investigate the event, interpret Linux command behavior, avoid overstating the evidence, and produce a low-to-medium risk decision with clear follow-up actions.

@@ -1,43 +1,29 @@
-# Threat Hunting Wazuh Bruteforce Detection
+# Threat Hunting Wazuh Brute Force Detection
 
 ## Overview
-A detection engineering exercise utilizing the Wazuh platform to identify and analyze a brute force attack on an Ubuntu Linux VM. The investigation focused on repeated failed login attempts using SSH, demonstrating pattern recognition skills essential for effective threat hunting.
+Wazuh threat hunting workflow focused on identifying repeated SSH login failures and correlating them into a brute force pattern.
 
-## Objective
-The objective of this lab was to demonstrate the ability to perform threat hunting activities within the Wazuh platform, identify a brute force attack, and correlate multiple events into a pattern.
-
-## Tools Used
-- [Wazuh](https://www.wazuh.com/)
-
-## Environment / Lab Setup
-The lab environment consisted of an Ubuntu Linux VM running the Wazuh platform for threat hunting purposes. The specific configuration and setup details are not provided due to missing evidence.
-
-## Investigation Steps
-1. Initiated a threat hunting session within the Wazuh Events view.
-2. Searched authentication logs for failed login attempts using SSH.
-3. Identified repeated failed login behavior from the same user and source IP.
-4. Analyzed the timing between the failed login attempts, noting their rapid succession.
-5. Correlated multiple events into a pattern, confirming brute force activity.
-6. Documented findings, including the number of failed login attempts (approximately 10).
+## What I Did
+- Opened the Wazuh Events view for threat hunting.
+- Searched authentication activity for repeated SSH failures.
+- Reviewed repeated failed login behavior from the same user and source IP.
+- Compared event timing to determine whether the behavior suggested automation.
+- Documented the brute force pattern and mapped it to MITRE ATT&CK T1110.
 
 ## Key Findings
-- Brute force attack pattern identified through pattern recognition and event correlation.
-- Approximately 10 failed login attempts from the same user and source IP.
-- Rapid timing between the failed login attempts, indicating automated brute force activity.
+- Repeated failed SSH login attempts were observed.
+- The same user and source IP were involved in the documented failed attempts.
+- The timing between attempts supported a brute force pattern.
+- The project shows pattern recognition across events, not just single-alert review.
 
 ## Security Impact
-The detected brute force attack poses a potential security risk by attempting to gain unauthorized access to the system. If successful, an attacker could potentially compromise sensitive data or services.
+Brute force behavior can lead to unauthorized access if credentials are guessed successfully. Detecting repeated authentication failures early gives defenders a chance to block the source, protect accounts, and validate whether any login succeeded.
 
-## MITRE ATT&CK Mapping
-- T1110: Brute Force
+## Tools Used
+- Wazuh
+- Ubuntu Linux VM
+- SSH authentication logs
+- MITRE ATT&CK
 
-### 📸 Evidence
-
-#### Failed Login Activity
-![Failed Logins](evidence/screenshots/01-failed-logins.png)
-
-#### Pattern Detection (Repeated Attempts)
-![Pattern Detection](evidence/screenshots/02-pattern-detection.png)
-
-#### Event Details (Brute Force Confirmation)
-![Event Details](evidence/screenshots/03-event-details.png)
+## Outcome
+The documented workflow identified a brute force pattern in Wazuh and produced a clear SOC-style explanation of the risk and investigation path.
