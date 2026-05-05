@@ -59,6 +59,40 @@ TOPIC_KEYWORDS = {
     "facebook": "social-media-publishing",
 }
 
+CATEGORY_BY_TOPIC = {
+    "phishing-analysis": "SOC Lab",
+    "threat-hunting": "Threat Hunting",
+    "siem": "SOC Lab",
+    "intrusion-detection": "Detection Engineering",
+    "network-telemetry": "Network Security",
+    "brute-force-detection": "SOC Lab",
+    "dns-analysis": "Network Security",
+    "ssh-monitoring": "SOC Lab",
+    "active-directory": "SOC Lab",
+    "network-security": "Blue-Team Lab",
+    "workflow-automation": "Portfolio Project",
+    "automation": "Portfolio Project",
+    "content-systems": "Portfolio Project",
+    "testing": "Portfolio Project",
+}
+
+SKILL_BY_TOPIC = {
+    "phishing-analysis": "Phishing analysis",
+    "threat-hunting": "Threat hunting",
+    "siem": "SIEM review",
+    "intrusion-detection": "Detection review",
+    "network-telemetry": "Network telemetry analysis",
+    "brute-force-detection": "Brute-force detection",
+    "dns-analysis": "DNS analysis",
+    "ssh-monitoring": "SSH monitoring",
+    "active-directory": "Active Directory review",
+    "network-security": "Network security analysis",
+    "workflow-automation": "Workflow automation",
+    "automation": "Automation design",
+    "content-systems": "Documentation workflow design",
+    "testing": "Testing and validation",
+}
+
 STOPWORDS = {
     "about",
     "after",
@@ -186,7 +220,7 @@ def build_eli10_summary(analysis: ProjectAnalysis, scan: ProjectScan, public_mod
         f"- Tools involved: {', '.join(analysis.tools) if analysis.tools else 'The written notes did not clearly name tools, but the project still documents a real workflow.'}",
         "- Big takeaway: the strongest projects do more than work technically. They also make the process readable, safe, and easy to review.",
     ]
-    return intro + "\n".join(body) + "\n"
+    return intro + "\n".join(body) + "\n\n" + build_notion_update(analysis, scan)
 
 
 def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
@@ -234,7 +268,7 @@ def build_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan, public
             "- End with what was learned and how it maps to practical engineering skills.",
         ]
     )
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n\n" + build_notion_update(analysis, scan)
 
 
 def build_github_readme_update(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
@@ -279,7 +313,7 @@ def build_github_readme_update(analysis: ProjectAnalysis, scan: ProjectScan, pub
             "- Communication for mixed technical and non-technical audiences",
         ]
     )
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n\n" + build_notion_update(analysis, scan)
 
 
 def build_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
@@ -311,7 +345,8 @@ def build_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan, public_mod
         f"- {lesson_two}\n\n"
         f"I also used the project notes inside `{scan.project_path.name}` to turn raw lab material into a cleaner, recruiter-friendly summary.\n\n"
         f"What is one technical skill you think becomes more valuable when it is documented clearly?\n\n"
-        f"{hashtags}\n"
+        f"{hashtags}\n\n"
+        f"{build_notion_update(analysis, scan)}"
     )
 
 
@@ -358,7 +393,7 @@ def build_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan, public_mod
             "- Convert the strongest takeaway into a resume bullet, GitHub blurb, or interview story.",
         ]
     )
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n\n" + build_notion_update(analysis, scan)
 
 
 def build_source_manifest(analysis: ProjectAnalysis, scan: ProjectScan, public_mode: bool = False) -> str:
@@ -413,7 +448,7 @@ def build_public_technical_summary(analysis: ProjectAnalysis, scan: ProjectScan)
             "- Converting detailed work into a recruiter-friendly summary",
         ]
     )
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n\n" + build_notion_update(analysis, scan)
 
 
 def build_public_github_update(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
@@ -442,7 +477,7 @@ def build_public_github_update(analysis: ProjectAnalysis, scan: ProjectScan) -> 
         lines.extend(f"- {sentence}" for sentence in public_sentences[:3])
     else:
         lines.append("- The project shows a practical technical workflow and the ability to document results clearly.")
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n\n" + build_notion_update(analysis, scan)
 
 
 def build_public_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
@@ -467,7 +502,8 @@ def build_public_linkedin_post(analysis: ProjectAnalysis, scan: ProjectScan) -> 
         f"- {lesson_one}\n"
         f"- {lesson_two}\n\n"
         "Clear documentation makes technical work easier to share with recruiters, hiring managers, and other technical professionals.\n\n"
-        f"{hashtags}\n"
+        f"{hashtags}\n\n"
+        f"{build_notion_update(analysis, scan)}"
     )
 
 
@@ -499,7 +535,60 @@ def build_public_onenote_notes(analysis: ProjectAnalysis, scan: ProjectScan) -> 
             "- Use the GitHub and LinkedIn drafts as the primary public-facing versions.",
         ]
     )
+    return "\n".join(lines) + "\n\n" + build_notion_update(analysis, scan)
+
+
+def build_notion_update(analysis: ProjectAnalysis, scan: ProjectScan) -> str:
+    evidence_folder = _find_evidence_folder(scan.project_path)
+    lines = [
+        "## Notion Update",
+        "",
+        f"- Project/Lab Name: {analysis.project_title or 'Not provided'}",
+        f"- Category: {_notion_category(analysis)}",
+        "- Status: Needs review",
+        f"- Tools Used: {', '.join(analysis.tools) if analysis.tools else 'Not provided'}",
+        f"- Skills Demonstrated: {_notion_skills(analysis)}",
+        f"- Evidence/Screenshot Folder: {evidence_folder if evidence_folder else 'Needs review'}",
+        "- GitHub README Status: Draft generated; needs review",
+        "- LinkedIn Draft Status: Local draft generated; needs review",
+        "- Security Review Status: Needs review",
+        "- Next Step: Review evidence, README, and security status before publishing.",
+        "- Notes: Copy/paste-ready for Notion. No Notion API integration was used.",
+    ]
     return "\n".join(lines) + "\n"
+
+
+def _notion_category(analysis: ProjectAnalysis) -> str:
+    for topic in analysis.topics:
+        if topic in CATEGORY_BY_TOPIC:
+            return CATEGORY_BY_TOPIC[topic]
+    return "Needs review"
+
+
+def _notion_skills(analysis: ProjectAnalysis) -> str:
+    skills: list[str] = []
+    for topic in analysis.topics:
+        skill = SKILL_BY_TOPIC.get(topic)
+        if skill and skill not in skills:
+            skills.append(skill)
+    return ", ".join(skills[:4]) if skills else "Needs review"
+
+
+def _find_evidence_folder(project_path: Path) -> str | None:
+    candidate_names = (
+        "evidence",
+        "screenshots",
+        "screenshot",
+        "docs/images",
+        "docs/img",
+        "images",
+        "img",
+    )
+    for candidate_name in candidate_names:
+        candidate = project_path / candidate_name
+        if candidate.is_dir():
+            return candidate_name
+    return None
 
 
 def _clear_existing_output_files(project_output_dir: Path) -> None:

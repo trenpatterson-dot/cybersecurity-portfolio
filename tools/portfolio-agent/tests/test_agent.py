@@ -192,6 +192,74 @@ def test_standardized_output_filenames_are_created(tmp_path, monkeypatch):
     assert "notes.txt" in sources_content
 
 
+def test_generated_documentation_includes_notion_update_without_new_files(tmp_path, monkeypatch):
+    portfolio_root = tmp_path / "portfolio"
+    output_dir = tmp_path / "agent-output"
+    project = create_project(
+        portfolio_root,
+        "wazuh-bruteforce-lab",
+        {
+            "README.md": (
+                "This Wazuh lab documents brute force detection on Windows with Python validation notes.",
+                0,
+            ),
+        },
+    )
+    (project / "evidence").mkdir()
+    configure_env(monkeypatch, portfolio_root, output_dir)
+
+    exit_code = run_agent(monkeypatch, ["--project", "wazuh-bruteforce-lab"])
+
+    assert exit_code == 0
+    project_output = output_dir / "wazuh-bruteforce-lab"
+    assert {path.name for path in project_output.iterdir() if path.is_file()} == EXPECTED_OUTPUT_FILES
+
+    documentation_files = [
+        "eli10.md",
+        "technical-summary.md",
+        "github-update.md",
+        "linkedin-post.md",
+        "onenote-notes.md",
+    ]
+    for filename in documentation_files:
+        content = (project_output / filename).read_text(encoding="utf-8")
+        assert "## Notion Update" in content
+        assert "- Project/Lab Name: Wazuh Bruteforce Lab" in content
+        assert "- Category: Threat Hunting" in content
+        assert "- Status: Needs review" in content
+        assert "- Tools Used: Wazuh, Windows, Python" in content
+        assert "- Skills Demonstrated: Threat hunting, Brute-force detection" in content
+        assert "- Evidence/Screenshot Folder: evidence" in content
+        assert "- GitHub README Status: Draft generated; needs review" in content
+        assert "- LinkedIn Draft Status: Local draft generated; needs review" in content
+        assert "- Security Review Status: Needs review" in content
+        assert "- Next Step: Review evidence, README, and security status before publishing." in content
+        assert "- Notes: Copy/paste-ready for Notion. No Notion API integration was used." in content
+
+    sources_content = (project_output / "sources.md").read_text(encoding="utf-8")
+    assert "## Notion Update" not in sources_content
+
+
+def test_notion_update_uses_review_defaults_when_fields_are_unknown(tmp_path, monkeypatch):
+    portfolio_root = tmp_path / "portfolio"
+    output_dir = tmp_path / "agent-output"
+    create_project(
+        portfolio_root,
+        "unclear-project",
+        {"README.md": ("Short project note without named tools or evidence folders.", 0)},
+    )
+    configure_env(monkeypatch, portfolio_root, output_dir)
+
+    exit_code = run_agent(monkeypatch, ["--project", "unclear-project"])
+
+    assert exit_code == 0
+    technical = (output_dir / "unclear-project" / "technical-summary.md").read_text(encoding="utf-8")
+    assert "- Category: Needs review" in technical
+    assert "- Tools Used: Not provided" in technical
+    assert "- Skills Demonstrated: Needs review" in technical
+    assert "- Evidence/Screenshot Folder: Needs review" in technical
+
+
 def test_open_flag_prints_quick_access_paths_for_single_project(tmp_path, monkeypatch, capsys):
     portfolio_root = tmp_path / "portfolio"
     output_dir = tmp_path / "agent-output"
