@@ -61,3 +61,7 @@ tools/portfolio-index/reports/
 tools/portfolio-index/tests/_tmp/
 tools/recruiter-portfolio/reports/
 tools/recruiter-portfolio/tests/_tmp/
+
+# Local generated career alignment reports
+tools/career-alignment/reports/
+tools/career-alignment/tests/_tmp/
