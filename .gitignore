@@ -54,3 +54,8 @@ content-workflow/queue/
 content-workflow/reviews/
 
 !content-workflow/SUPERVISOR-CONTENT-HANDOFF.md
+
+# Local generated tool reports
+tools/orchestrator/reports/
+tools/portfolio-index/reports/
+tools/portfolio-index/tests/_tmp/
