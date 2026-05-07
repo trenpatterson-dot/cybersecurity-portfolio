@@ -1,0 +1,30 @@
+# Wazuh investigation terms used for this lab
+
+# Alert overview and affected host context
+manager.name: tren
+agent.name: tren
+location: journald
+
+# Systemd service failure review
+decoder.name: systemd
+rule.description: "Systemd: Service exited due to a failure."
+full_log: "xdg-permission-store.service"
+full_log: "status=1/FAILURE"
+
+# Related authentication and session context
+decoder.name: pam
+rule.groups: authentication_success
+rule.groups: authentication_failed
+predecoder.program_name: pkexec
+predecoder.program_name: sudo
+predecoder.program_name: sshd
+
+# MITRE context visible in the reviewed Wazuh fields
+rule.mitre.id: T1078
+rule.mitre.technique: "Valid Accounts"
+rule.mitre.tactic: "Privilege Escalation"
+
+# Failed-login context visible in the screenshots
+rule.description: "sshd: Attempt to login using a non-existent user"
+rule.description: "PAM: User login failed."
+rule.description: "syslog: User missed the password more than one time"

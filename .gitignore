@@ -40,3 +40,14 @@ api.txt
 .env
 .env.*
 outputs/
+
+# SOC alert triage local-only raw screenshots
+blue-team-labs/soc-alert-triage-lab/evidence/screenshots/
+
+# Content workflow local-only artifacts
+content-workflow/drafts/linkedin-local-only/
+content-workflow/publish/ready/
+content-workflow/queue/
+content-workflow/reviews/
+
+!content-workflow/SUPERVISOR-CONTENT-HANDOFF.md
