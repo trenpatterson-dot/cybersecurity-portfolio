@@ -44,6 +44,9 @@ outputs/
 # SOC alert triage local-only raw screenshots
 blue-team-labs/soc-alert-triage-lab/evidence/screenshots/
 
+# Windows failed login local-only raw screenshots
+blue-team-labs/windows-failed-login-investigation/evidence/screenshots/
+
 # Content workflow local-only artifacts
 content-workflow/drafts/linkedin-local-only/
 content-workflow/publish/ready/
