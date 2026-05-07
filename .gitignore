@@ -59,3 +59,5 @@ content-workflow/reviews/
 tools/orchestrator/reports/
 tools/portfolio-index/reports/
 tools/portfolio-index/tests/_tmp/
+tools/recruiter-portfolio/reports/
+tools/recruiter-portfolio/tests/_tmp/
