@@ -1,0 +1,8 @@
+Opened phishing-email-sample.txt in VS Code
+Reviewed sender and Reply-To addresses
+Identified typosquatting behavior
+Extracted suspicious domains
+Defanged phishing URL for documentation
+Mapped phishing activity to MITRE ATT&CK techniques
+Documented findings in Markdown investigation notes
+Captured investigation screenshots

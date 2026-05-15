@@ -1,0 +1,17 @@
+From: Microsoft Security Team <security-update@micr0soft-verification.com>
+Reply-To: support@account-verification-alerts.com
+To: employee@company.local
+Subject: Urgent: Password Expiration Notice
+
+Dear User,
+
+Your Microsoft 365 password is scheduled to expire today.
+
+To avoid interruption of email access, please verify your account immediately using the secure link below:
+
+http://microsoft-login-verification-reset.example
+
+Failure to verify your account within 24 hours may result in temporary account suspension.
+
+Thank you,
+Microsoft Security Team
