@@ -5,15 +5,15 @@
 - Project path: `blue-team-labs/soc-alert-triage-lab`
 - Review type: final report-only GitHub readiness review
 - Review date: 2026-05-07
-- Decision status: **READY FOR REVIEW**
+- Decision status: **PIN CANDIDATE AFTER FINAL SCREENSHOT REDACTION REVIEW**
 
 ## Executive Summary
 
-The SOC alert triage lab is ready for human GitHub review.
+The SOC alert triage lab is ready for human GitHub review and is a strong GitHub pin candidate after final screenshot redaction review.
 
 The README is evidence-linked, recruiter-readable, and points to public-safe screenshots under `evidence/screenshots-public/`. The public screenshot files exist and are not ignored. The original raw screenshots under `evidence/screenshots/` are ignored and should remain local-only. Generated outputs, LinkedIn drafts, and `SOC_Triage_HANDOFF.md` are also ignored/local-only.
 
-Human approval is still required before any `git add`, commit, or push.
+Human approval is still required before any `git add`, commit, push, or GitHub pinning decision.
 
 ## README Quality
 
@@ -53,7 +53,7 @@ All expected public screenshot files exist:
 Public screenshot ignore status:
 
 - `git check-ignore` returned exit code `1` for `evidence/screenshots-public/01-wazuh-alert-overview-public.png`, confirming it is not ignored.
-- Public screenshots remain GitHub candidate images.
+- Public screenshots remain GitHub candidate images pending final human redaction review.
 
 ## Raw Screenshots
 
@@ -189,15 +189,17 @@ Keep these out of GitHub staging:
 ## Remaining Blockers
 
 - None for report-only GitHub review.
+- Final screenshot redaction review is still required before hard-pinning this project.
 
 Remaining operational requirements:
 
 - Human approval is required before `git add`, commit, or push.
 - Use explicit file-path staging only; do not use `git add .`.
 - Keep ignored local-only artifacts out of GitHub.
+- Confirm `evidence/screenshots-public/` is acceptable for public pinning before promoting this project.
 
 ## Recommended Next Action
 
-Proceed to human GitHub review.
+Proceed to human GitHub review and final public screenshot review.
 
 If approved, prepare a file-specific staging list containing only the safe files listed above, plus `.gitignore` if the raw screenshot ignore rule is intended to be committed.

@@ -32,6 +32,8 @@ No visible tokens, API keys, passwords, emails, or customer data were identified
 
 README now links to public-safe screenshot copies under `evidence/screenshots-public/`. Those public screenshot copies are the GitHub candidate images.
 
+Current publishing note: the public screenshot copies still need final human privacy review before this project is hard-pinned on GitHub. Do not publish the raw screenshots, and do not treat the public copies as fully approved until a human confirms that remaining local identifiers, timestamps, IP context, event IDs, and detailed log fields are acceptable or redacted.
+
 ## Screenshot Findings
 
 ### `01-wazuh-alert-overview.png`
@@ -152,15 +154,15 @@ README now links to public-safe screenshot copies under `evidence/screenshots-pu
 
 Do not publish the original screenshots from `evidence/screenshots/` to GitHub as-is.
 
-README now links to public-safe copies under `evidence/screenshots-public/`. Those public copies are the GitHub candidate images.
+README now links to public-safe copies under `evidence/screenshots-public/`. Those public copies are the GitHub candidate images, pending final human redaction review before hard-pinning.
 
 Recommended safe path:
 
 1. Keep original screenshots under `evidence/screenshots/` local-only.
-2. Use the public-safe copies under `evidence/screenshots-public/` as the GitHub candidate images.
+2. Use the public-safe copies under `evidence/screenshots-public/` as the GitHub candidate images only after final human privacy review.
 3. Re-run evidence validation after any approved screenshot replacement or README link update.
 
 ## Remaining Blockers
 
 - Original screenshots under `evidence/screenshots/` should stay local-only unless Tren explicitly approves publishing local lab identifiers.
-- README now links to `evidence/screenshots-public/`; those public screenshot copies are the GitHub candidate images.
+- README now links to `evidence/screenshots-public/`; those public screenshot copies are the GitHub candidate images after final human privacy review.

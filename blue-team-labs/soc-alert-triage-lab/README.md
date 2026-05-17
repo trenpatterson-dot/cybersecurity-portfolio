@@ -46,31 +46,47 @@ Investigate a Wazuh alert and determine whether the event required escalation, a
 
 **Reason:** The documented event indicates a local service failure rather than clear malicious activity. Related authentication and sudo activity was reviewed, but the available notes did not identify direct evidence of compromise. Continued monitoring is appropriate in case similar service failures, authentication events, or privilege-related activity repeat.
 
+## Why This Matters for SOC Work
+
+SOC analysts often review alerts that contain security-relevant context but do not automatically prove compromise. This lab shows the process of checking the alert details, surrounding authentication activity, and timeline context before making a measured triage decision.
+
 ## Evidence and Screenshots
 
-The screenshots below are stored under `evidence/screenshots-public/` and are referenced here so the public-safe lab evidence is reviewable from the README.
+The screenshots below are GitHub candidate copies stored under `evidence/screenshots-public/`. They are included to show the review flow while keeping the original raw screenshots local-only.
 
 ### Wazuh Alert Overview
 
+Dashboard view showing the authentication-related alert set that started the triage review.
+
 ![Wazuh alert overview](evidence/screenshots-public/01-wazuh-alert-overview-public.png)
 
-### Failed Login Raw Event
+### Authentication Failure Event Details
+
+Raw Wazuh event details for the failed-login context reviewed alongside the service-failure alert.
 
 ![Failed login raw event](evidence/screenshots-public/02-failed-login-raw-event-public.png)
 
-### Repeated Failed Logins Filtered
+### Failed Login Pattern Review
+
+Filtered Wazuh results used to check whether authentication failures repeated or appeared isolated.
 
 ![Repeated failed logins filtered](evidence/screenshots-public/03-repeated-failed-logins-filtered-public.png)
 
-### Alert Fields, Source, User, Host, and Time
+### Service-Failure Alert Fields
+
+Field-level view for the systemd service-failure alert, including host, source, and timestamp context.
 
 ![Alert fields source user host time](evidence/screenshots-public/04-alert-fields-source-user-host-time-public.png)
 
-### Related Events Timeline
+### Related Event Timeline
+
+Timeline view used to compare the service-failure event against nearby authentication, PAM, and sudo activity.
 
 ![Related events timeline](evidence/screenshots-public/04-related-events-timeline-public.png)
 
-### PAM Login Session Details
+### PAM Session Context
+
+PAM session details reviewed to determine whether local privilege-related activity looked expected or suspicious.
 
 ![PAM login session details](evidence/screenshots-public/05-pam-login-session-details-public.png)
 

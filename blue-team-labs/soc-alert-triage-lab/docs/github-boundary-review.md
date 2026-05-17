@@ -3,26 +3,30 @@
 ## Project
 
 - Project path: `blue-team-labs/soc-alert-triage-lab`
-- Review type: report-only GitHub boundary cleanup review
-- Review date: 2026-05-07
-- Scope inspected: `README.md`, `docs/`, `queries/`, `evidence/screenshots/`, `outputs/`, and `SOC_Triage_HANDOFF.md`
+- Review type: report-only GitHub boundary review
+- Review date: 2026-05-17
+- Current status: GitHub pin candidate after final human screenshot redaction review
+- Scope inspected: `README.md`, `docs/`, `queries/`, `evidence/screenshots-public/`, local-only raw screenshot boundary, generated outputs boundary, and `SOC_Triage_HANDOFF.md` ignore boundary
 
 ## GitHub-Safe Files
 
-These files are reasonable GitHub candidates after final content and privacy review:
+These files are reasonable GitHub candidates after final human review:
 
 - `README.md`
 - `docs/findings.md`
 - `docs/investigation.md`
+- `docs/github-boundary-review.md`
+- `docs/github-readiness-report.md`
+- `docs/screenshot-privacy-review.md`
 - `queries/investigation-queries.txt`
-- `evidence/screenshots/01-wazuh-alert-overview.png`
-- `evidence/screenshots/02-failed-login-raw-event.png`
-- `evidence/screenshots/03-repeated-failed-logins-filtered.png`
-- `evidence/screenshots/04-alert-fields-source-user-host-time.png`
-- `evidence/screenshots/04-related-events-timeline.png`
-- `evidence/screenshots/05-pam-login-session-details.png`
+- `evidence/screenshots-public/01-wazuh-alert-overview-public.png`
+- `evidence/screenshots-public/02-failed-login-raw-event-public.png`
+- `evidence/screenshots-public/03-repeated-failed-logins-filtered-public.png`
+- `evidence/screenshots-public/04-alert-fields-source-user-host-time-public.png`
+- `evidence/screenshots-public/04-related-events-timeline-public.png`
+- `evidence/screenshots-public/05-pam-login-session-details-public.png`
 
-Important qualifier: the screenshot files are structurally valid evidence, but they still need human privacy review before public GitHub use because visible fields include local host/user context, local Wazuh URLs, timestamps, private lab IP context, and command/session details.
+Important qualifier: the public screenshot copies are the only screenshot candidates for GitHub. They still need final human privacy review before hard-pinning because some local lab identifiers and event details may remain visible.
 
 ## Local-Only Files
 
@@ -30,6 +34,13 @@ These files and folders should stay local-only unless Tren explicitly approves a
 
 - `SOC_Triage_HANDOFF.md`
 - `outputs/`
+- `evidence/screenshots/`
+- `evidence/screenshots/01-wazuh-alert-overview.png`
+- `evidence/screenshots/02-failed-login-raw-event.png`
+- `evidence/screenshots/03-repeated-failed-logins-filtered.png`
+- `evidence/screenshots/04-alert-fields-source-user-host-time.png`
+- `evidence/screenshots/04-related-events-timeline.png`
+- `evidence/screenshots/05-pam-login-session-details.png`
 - `outputs/20260421_140818/evidence.json`
 - `outputs/20260421_140818/intake.json`
 - `outputs/20260421_225032/eli10.md`
@@ -68,6 +79,7 @@ Current `.gitignore` coverage should exclude:
 - `outputs/` by `.gitignore` rule `outputs/`
 - All nested files under `outputs/`, including generated markdown, JSON, QA reports, and LinkedIn drafts
 - `SOC_Triage_HANDOFF.md` by `.gitignore` rule `**/*HANDOFF*.md`
+- Raw screenshots under `evidence/screenshots/` by the project-specific raw screenshot ignore rule
 
 The LinkedIn drafts inside `outputs/` are currently ignored:
 
@@ -81,10 +93,11 @@ Accidental commit risk: normal `git add` should not add these ignored files, but
 ## Evidence Status
 
 - Evidence folder exists: yes
-- Screenshot folder exists: yes
-- Screenshot files exist: yes
+- Public screenshot folder exists: yes
+- Public screenshot files exist: yes
+- Raw screenshot folder exists and remains local-only: yes
 - Screenshot image headers are valid according to the evidence validator: yes
-- README references all six local screenshot files: yes
+- README references all six public screenshot files: yes
 - README image references are valid: yes
 - Missing README image references: none
 - Secret-like files found by validator: none
@@ -94,16 +107,12 @@ The validator status remains `NEEDS ORGANIZATION` because local-only artifacts a
 
 ## Screenshot Privacy Review Status
 
-Needs human privacy review before GitHub publishing.
+Final human privacy review is still required before GitHub publishing or hard-pinning.
 
 Observed review notes:
 
-- `01-wazuh-alert-overview.png` shows Wazuh dashboard context, local browser URL, manager/agent name `tren`, and authentication metrics.
-- `02-failed-login-raw-event.png` shows raw event details, local host/user context, rule IDs, timestamps, and private lab IP context.
-- `03-repeated-failed-logins-filtered.png` shows Wazuh event rows, timestamps, agent name `tren`, failed login rule details, and rule IDs.
-- `04-alert-fields-source-user-host-time.png` shows dashboard metrics and host/agent context.
-- `04-related-events-timeline.png` shows detailed event fields, local user/host context, UID values, sudo/pkexec activity, command path details, and timestamps.
-- `05-pam-login-session-details.png` shows PAM session details, root session context, local user/host context, rule and compliance fields, and timestamps.
+- Raw screenshots under `evidence/screenshots/` expose local lab context and should stay local-only.
+- Public screenshot copies under `evidence/screenshots-public/` are improved GitHub candidates, but they still need final human review for local identifiers, timestamps, event IDs, private lab IP context, and detailed event fields.
 
 No obvious secrets or credentials were identified by filename or validator output, but the screenshots include enough local lab identifiers to require a deliberate public-safety decision.
 
@@ -112,14 +121,14 @@ No obvious secrets or credentials were identified by filename or validator outpu
 - README is evidence-linked and references all six screenshots with relative paths.
 - README excludes `outputs/`, `SOC_Triage_HANDOFF.md`, and LinkedIn drafts from the evidence narrative.
 - README is more recruiter-readable than the earlier version.
-- README should not be considered GitHub-ready until screenshot privacy review and source-doc consistency cleanup are complete.
+- README should be considered ready for human GitHub review, with final screenshot redaction review still required before hard-pinning.
 
 Content consistency notes:
 
 - `docs/findings.md` describes a systemd service failure and related PAM/sudo context.
 - `SOC_Triage_HANDOFF.md` describes repeated failed SSH login attempts and should remain local-only because it conflicts with the current README/findings narrative.
-- `docs/investigation.md` still contains blank alert-summary fields and a stale screenshot list that does not match the current screenshot filenames.
-- `queries/investigation-queries.txt` exists but appears empty, so it should either be populated with real queries used or removed from public README references in a later cleanup pass.
+- `docs/investigation.md` now aligns with the current service-failure and authentication-context narrative.
+- `queries/investigation-queries.txt` contains Wazuh investigation terms used for this lab and should remain evidence-bound.
 
 ## `.gitignore` Coverage
 
@@ -132,20 +141,23 @@ Confirmed by `git check-ignore -v`:
 - `blue-team-labs/soc-alert-triage-lab/outputs/20260421_232119/linkedin.md` is ignored by `.gitignore:42:outputs/`
 - `blue-team-labs/soc-alert-triage-lab/outputs/20260421_225032/github-update.md` is ignored by `.gitignore:42:outputs/`
 - `blue-team-labs/soc-alert-triage-lab/SOC_Triage_HANDOFF.md` is ignored by `.gitignore:27:**/*HANDOFF*.md`
+- `blue-team-labs/soc-alert-triage-lab/evidence/screenshots/` is ignored by the project-specific raw screenshot ignore rule
 
 Tracked-file check:
 
-- `git ls-files -- blue-team-labs/soc-alert-triage-lab` returned only `blue-team-labs/soc-alert-triage-lab/README.md`.
-- No ignored local-only files are currently tracked.
+- Safe project docs, public screenshots, and query notes are tracked or safe candidates.
+- Ignored local-only raw screenshots, generated outputs, and HANDOFF files should remain out of staging.
 
-## Files That Need Privacy Review
+## Screenshot Files That Need Final Human Review
 
-- `evidence/screenshots/01-wazuh-alert-overview.png`
-- `evidence/screenshots/02-failed-login-raw-event.png`
-- `evidence/screenshots/03-repeated-failed-logins-filtered.png`
-- `evidence/screenshots/04-alert-fields-source-user-host-time.png`
-- `evidence/screenshots/04-related-events-timeline.png`
-- `evidence/screenshots/05-pam-login-session-details.png`
+- `evidence/screenshots-public/01-wazuh-alert-overview-public.png`
+- `evidence/screenshots-public/02-failed-login-raw-event-public.png`
+- `evidence/screenshots-public/03-repeated-failed-logins-filtered-public.png`
+- `evidence/screenshots-public/04-alert-fields-source-user-host-time-public.png`
+- `evidence/screenshots-public/04-related-events-timeline-public.png`
+- `evidence/screenshots-public/05-pam-login-session-details-public.png`
+
+Raw screenshots under `evidence/screenshots/` should remain local-only and are not GitHub candidates.
 
 ## Files That Should Stay Out Of README
 
@@ -163,21 +175,19 @@ Tracked-file check:
 
 ## Remaining Blockers
 
-- Screenshot privacy review is still required before GitHub/public use.
-- `docs/investigation.md` contains blank fields and stale screenshot names.
-- `queries/investigation-queries.txt` appears empty.
-- `SOC_Triage_HANDOFF.md` conflicts with the current README/findings narrative and must remain local-only.
+- No blocker prevents human GitHub review.
+- Final human screenshot redaction review is still required before hard-pinning this project.
+- `SOC_Triage_HANDOFF.md` remains local-only and should not be used as public source material.
 - `outputs/` contains generated and LinkedIn draft artifacts that should stay ignored and out of README.
-- Evidence validator still returns `NEEDS ORGANIZATION` due to local-only artifacts inside the project path.
+- Evidence validator may still return `NEEDS ORGANIZATION` because local-only artifacts exist inside the project path.
 
 ## Recommended Next Action
 
-Do not run GitHub readiness yet.
+Proceed to final human review for GitHub pinning.
 
-Recommended next safe cleanup pass:
+Recommended next safe steps:
 
-1. Update `docs/investigation.md` so it matches the final README, real screenshot filenames, and documented findings.
-2. Decide whether `queries/investigation-queries.txt` should be populated with real Wazuh queries used or removed from the README support links.
-3. Complete human screenshot privacy review for all six screenshots.
-4. Keep `outputs/` and `SOC_Triage_HANDOFF.md` local-only and ignored.
-5. Rerun the evidence validator after the docs cleanup.
+1. Complete final human privacy review of `evidence/screenshots-public/`.
+2. If needed, replace only the public screenshot copies, not the raw screenshots.
+3. Keep `outputs/`, `SOC_Triage_HANDOFF.md`, and `evidence/screenshots/` local-only and ignored.
+4. Use explicit file-path staging only after approval; do not use `git add .`.
