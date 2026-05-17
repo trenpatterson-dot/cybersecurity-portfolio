@@ -1,0 +1,39 @@
+Windows Event Viewer investigation notes
+
+Project: Windows failed login investigation
+Log source: Windows Logs > Security
+Primary Event ID: 4625
+
+Event Viewer filter:
+- Log: Security
+- Event ID: 4625
+- Keywords/context: Audit Failure, Logon
+
+Fields reviewed:
+- Event ID
+- Date and Time
+- Task Category
+- Account Name
+- Account Domain
+- Logon Type
+- Failure Reason
+- Source Network Address
+- Source Port
+- Process Name
+
+Search/review terms:
+- 4625
+- Audit Failure
+- An account failed to log on
+- Logon Type 2
+- Unknown user name or bad password
+- FakeUser
+- ::1
+- svchost.exe
+
+Validation checks:
+- Confirm whether repeated Event ID 4625 records exist.
+- Confirm whether any successful login event is documented.
+- Confirm whether source address is local or remote.
+- Confirm whether Logon Type indicates local, network, or remote interactive login.
+- Confirm whether failed account appears simulated, invalid, or production-sensitive.
