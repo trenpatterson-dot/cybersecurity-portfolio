@@ -48,6 +48,7 @@ blue-team-labs/soc-alert-triage-lab/evidence/screenshots/
 blue-team-labs/windows-failed-login-investigation/evidence/screenshots/
 
 # Content workflow local-only artifacts
+content-workflow/drafts/
 content-workflow/drafts/linkedin-local-only/
 content-workflow/publish/ready/
 content-workflow/queue/
@@ -65,3 +66,11 @@ tools/recruiter-portfolio/tests/_tmp/
 # Local generated career alignment reports
 tools/career-alignment/reports/
 tools/career-alignment/tests/_tmp/
+
+# Local-only portfolio records and coursework submissions
+*.one
+*.onetoc2
+*.xlsx
+*.zip
+job-tailor/profile.md
+job-tailor/application_log.jsonl

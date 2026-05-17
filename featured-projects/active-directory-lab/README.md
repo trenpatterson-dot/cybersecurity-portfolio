@@ -51,7 +51,7 @@ Organizational Units were used to logically separate resources:
 - Rebel Alliance OU  
 - Galactic Empire OU  
 
-![OUs](images/figure3-organizational-units.png)
+![OUs](images/figure3-organizational-unit.png)
 
 ---
 
