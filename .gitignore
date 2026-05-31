@@ -75,3 +75,9 @@ tools/career-alignment/tests/_tmp/
 *.zip
 job-tailor/profile.md
 job-tailor/application_log.jsonl
+content-workflow/analytics/
+content-workflow/performance/
+content-workflow/manus-ops/
+
+# Active Directory lab local-only credentials
+active-directory-security-monitoring-lab/notes/lab-credentials-local-only.md
