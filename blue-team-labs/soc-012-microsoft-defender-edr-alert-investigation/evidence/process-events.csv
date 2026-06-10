@@ -1,0 +1,6 @@
+﻿TimeGenerated,DeviceName,AccountName,FileName,ProcessCommandLine,InitiatingProcessFileName,InitiatingProcessCommandLine,SHA256,ActionType
+2026-06-09T19:15:10Z,WIN-WS-014,analyst3,winword.exe,"winword.exe C:\Users\analyst3\Downloads\invoice_review.docx",explorer.exe,"explorer.exe",hash-winword-001,ProcessCreated
+2026-06-09T19:16:02Z,WIN-WS-014,analyst3,powershell.exe,"powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand SQBFAFgA",winword.exe,"winword.exe C:\Users\analyst3\Downloads\invoice_review.docx",hash-powershell-001,ProcessCreated
+2026-06-09T19:16:08Z,WIN-WS-014,analyst3,cmd.exe,"cmd.exe /c whoami",powershell.exe,"powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand SQBFAFgA",hash-cmd-001,ProcessCreated
+2026-06-09T19:17:41Z,WIN-WS-014,analyst3,powershell.exe,"powershell.exe Get-Process",explorer.exe,"explorer.exe",hash-powershell-002,ProcessCreated
+2026-06-09T19:22:15Z,WIN-WS-014,analyst3,chrome.exe,"chrome.exe https://portal.office.com",explorer.exe,"explorer.exe",hash-chrome-001,ProcessCreated

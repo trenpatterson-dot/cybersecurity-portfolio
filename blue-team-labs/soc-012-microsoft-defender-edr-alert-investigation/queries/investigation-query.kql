@@ -1,0 +1,6 @@
+﻿DeviceProcessEvents
+| where Timestamp > ago(24h)
+| where FileName =~ "powershell.exe"
+| where ProcessCommandLine has_any ("EncodedCommand", "-enc", "ExecutionPolicy Bypass", "NoProfile")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine, InitiatingProcessFileName, InitiatingProcessCommandLine, SHA256
+| order by Timestamp desc
