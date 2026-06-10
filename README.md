@@ -8,6 +8,14 @@ Blue-team portfolio focused on evidence-based alert triage, log analysis, threat
 
 **Core tools:** Wazuh | Windows Event Logs | Wireshark | PowerShell | KQL | MITRE ATT&CK | Microsoft Defender and Sentinel concepts through simulated security operations cases
 
+## Portfolio Highlights
+
+* 10+ completed blue-team investigations
+* Active Directory and IAM monitoring series
+* Microsoft Sentinel, Defender EDR, and KQL investigations
+* Network traffic analysis and threat hunting
+* MITRE ATT&CK-aligned investigation documentation
+
 ## Featured Investigations
 
 | Project | Investigation Focus | Tools and Evidence |
@@ -17,10 +25,8 @@ Blue-team portfolio focused on evidence-based alert triage, log analysis, threat
 | [SOC-013 PowerShell Suspicious Script Investigation](blue-team-labs/soc-013-powershell-suspicious-script-investigation/) | Investigated simulated bypass-style PowerShell, attempted file-retrieval behavior, and related process activity. | PowerShell, KQL, endpoint events, MITRE ATT&CK |
 | [SOC Alert Triage Lab](blue-team-labs/soc-alert-triage-lab/) | Reviewed Wazuh alert context, correlated authentication activity, and documented a Monitor / Informational disposition. | Wazuh, PAM, Linux logs, MITRE ATT&CK, public-safe screenshots |
 | [Active Directory Security Monitoring Lab](active-directory-security-monitoring-lab/) | Investigated failed logons, account lockouts, user lifecycle events, and privileged group membership changes. | Windows Server, Active Directory, Windows Security Events |
-| [Windows Failed Login Investigation](blue-team-labs/windows-failed-login-investigation/) | Analyzed Event ID 4625 details and assessed local versus remote authentication risk. | Windows Event Viewer, Event ID 4625, public-safe evidence |
 | [Advanced Network Intrusion Detection and Threat Hunting](blue-team-labs/advanced-network-intrusion-detection-lab/) | Validated a custom IDS rule and investigated beaconing, suspicious DNS activity, and long-lived connections. | Suricata, SELKS, Zeek, RITA, Kibana, Wireshark |
 | [Suspicious Network Traffic Investigation](security-plus-projects/suspicious-network-traffic-investigation/) | Identified TCP SYN scanning behavior and validated open and closed service responses. | Wireshark, Nmap, TCP/IP analysis, MITRE ATT&CK T1046 |
-| [Threat Hunting: PowerShell and Linux Reconnaissance](threat-hunting-powershell/) | Reviewed authentication and privilege activity and documented a command-visibility gap. | Wazuh, Linux logs, PowerShell, threat hunting |
 
 ## Microsoft Security Operations Series
 
@@ -56,15 +62,6 @@ The projects in this repository show how I approach security investigations:
 
 This repository documents hands-on work with alerts, logs, packet captures, detection logic, and investigation notes for SOC and security analyst roles. The public-facing work is intended to show a clear blue-team career story: triage alerts, analyze authentication activity, investigate suspicious traffic, map behavior to MITRE ATT&CK, and write practical findings.
 
-## Review-Ready / In Progress
-
-These projects are useful parts of the portfolio story, but still need final screenshot review, README polish, or GitHub readiness checks before being treated as fully polished public work.
-
-- [Advanced Network Intrusion Detection Lab](blue-team-labs/advanced-network-intrusion-detection-lab/) - Suricata, SELKS, Zeek, RITA, Kibana, Evebox, and threat hunting workflow.
-- [Phishing Investigation Workflow](blue-team-labs/phishing-investigation-workflow/) - phishing indicator review, IOC extraction, URL analysis, email-header reasoning, and MITRE ATT&CK mapping.
-- [Detection Engineering with Wazuh](blue-team-labs/detection-engineering-wazuh/) - Wazuh authentication telemetry, false-positive analysis, and detection engineering lessons.
-- [Malware Detection with YARA and Sigma](blue-team-labs/malware-detection-yara-sigma/) - YARA/Sigma practice that needs additional README and public-screenshot cleanup before featuring.
-
 ## Tools and Skills
 
 This portfolio is organized around practical SOC and blue-team skills:
@@ -87,22 +84,13 @@ This portfolio is organized around practical SOC and blue-team skills:
 
 Some folders are still in progress or local-only. A project should not be treated as GitHub-ready just because a folder exists.
 
-## Public GitHub Safety Boundary
+## Public Evidence Policy
 
-This portfolio intentionally excludes local-only and private working material from public GitHub guidance.
+All projects in this repository are reviewed before publication.
 
-Do not include:
+Private data, credentials, internal notes, generated outputs, unpublished drafts, and unreviewed evidence are intentionally excluded.
 
-- `.env` files, API keys, tokens, credentials, or secret-like files
-- generated `outputs/` folders
-- HANDOFF files and private workflow notes
-- LinkedIn drafts or publishing queues
-- OneNote notebooks and local journal files
-- coursework submissions such as `.docx`, `.xlsx`, `.zip`, or final class packages
-- job-tailor local profile data or application logs
-- raw screenshots that have not passed privacy review
-
-Public README files should only describe evidence that exists in the repo and has been reviewed for safe sharing. If evidence is missing, private, or not yet validated, the README should say that clearly instead of overstating the result.
+Public project documentation is limited to reviewed evidence, validated findings, and safe-to-share screenshots.
 
 ## Portfolio Direction
 
