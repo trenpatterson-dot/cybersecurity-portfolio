@@ -28,6 +28,20 @@ Blue-team portfolio focused on evidence-based alert triage, log analysis, threat
 - [**SOC-012 - Microsoft Defender EDR Alert Investigation**](blue-team-labs/soc-012-microsoft-defender-edr-alert-investigation/)
 - [**SOC-013 - PowerShell Suspicious Script Investigation**](blue-team-labs/soc-013-powershell-suspicious-script-investigation/)
 
+## Skills-to-Evidence Matrix
+
+| Skill                             | Portfolio Evidence                                            |
+| --------------------------------- | ------------------------------------------------------------- |
+| Microsoft Sentinel concepts / KQL | SOC-011 Microsoft Sentinel Alert Triage                       |
+| Microsoft Defender EDR concepts   | SOC-012 Microsoft Defender EDR Alert Investigation            |
+| PowerShell investigation          | SOC-013 PowerShell Suspicious Script Investigation            |
+| Wazuh SIEM alert triage           | SOC Alert Triage Lab                                          |
+| Active Directory / IAM monitoring | Active Directory Security Monitoring Lab                      |
+| Windows Event Logs                | Windows Failed Login Investigation                            |
+| Wireshark / packet analysis       | Suspicious Network Traffic Investigation                      |
+| Threat hunting                    | Advanced Network Intrusion Detection and Threat Hunting       |
+| MITRE ATT&CK mapping              | SOC-011, SOC-012, SOC-013, and network investigation projects |
+
 ## Analyst Approach
 
 The projects in this repository show how I approach security investigations:
@@ -69,7 +83,7 @@ This portfolio is organized around practical SOC and blue-team skills:
 - `security-plus-projects/` - Security+ aligned investigations and structured practice projects.
 - `labs/` - additional lab writeups and public-safe summaries.
 - `tools/` - local helper tools for evidence validation, GitHub readiness review, project closeout, and portfolio indexing.
-- `docs/ai-context/` - local Codex workflow guidance for safe portfolio work.
+- `docs/` - supporting documentation and portfolio notes.
 
 Some folders are still in progress or local-only. A project should not be treated as GitHub-ready just because a folder exists.
 
