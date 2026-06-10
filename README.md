@@ -12,6 +12,7 @@ Blue-team portfolio focused on evidence-based alert triage, log analysis, threat
 
 | Project | Investigation Focus | Tools and Evidence |
 | --- | --- | --- |
+| [SOC-011 Microsoft Sentinel Alert Triage](blue-team-labs/soc-011-microsoft-sentinel-alert-triage/) | Triaged simulated repeated failed sign-ins from one unfamiliar source and documented an evidence-based escalation decision. | Microsoft Sentinel concepts, KQL, authentication telemetry, MITRE ATT&CK |
 | [SOC-012 Microsoft Defender EDR Alert Investigation](blue-team-labs/soc-012-microsoft-defender-edr-alert-investigation/) | Investigated a simulated Office-to-encoded-PowerShell process chain and documented an evidence-based escalation decision. | Microsoft Defender concepts, KQL, endpoint process telemetry, MITRE ATT&CK |
 | [SOC-013 PowerShell Suspicious Script Investigation](blue-team-labs/soc-013-powershell-suspicious-script-investigation/) | Investigated simulated bypass-style PowerShell, attempted file-retrieval behavior, and related process activity. | PowerShell, KQL, endpoint events, MITRE ATT&CK |
 | [SOC Alert Triage Lab](blue-team-labs/soc-alert-triage-lab/) | Reviewed Wazuh alert context, correlated authentication activity, and documented a Monitor / Informational disposition. | Wazuh, PAM, Linux logs, MITRE ATT&CK, public-safe screenshots |
@@ -23,7 +24,7 @@ Blue-team portfolio focused on evidence-based alert triage, log analysis, threat
 
 ## Microsoft Security Operations Series
 
-- **SOC-011 - Microsoft Sentinel Alert Triage:** Public-safe portfolio export pending.
+- [**SOC-011 - Microsoft Sentinel Alert Triage**](blue-team-labs/soc-011-microsoft-sentinel-alert-triage/)
 - [**SOC-012 - Microsoft Defender EDR Alert Investigation**](blue-team-labs/soc-012-microsoft-defender-edr-alert-investigation/)
 - [**SOC-013 - PowerShell Suspicious Script Investigation**](blue-team-labs/soc-013-powershell-suspicious-script-investigation/)
 

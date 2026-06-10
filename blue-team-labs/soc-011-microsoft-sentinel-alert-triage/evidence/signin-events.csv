@@ -1,0 +1,8 @@
+TimeGenerated,UserPrincipalName,IPAddress,Result,ResultDescription,AppDisplayName,Location
+2026-06-09T18:02:11Z,analyst3@contoso.local,203.0.113.45,Failure,Invalid username or password,Office 365,Unknown
+2026-06-09T18:03:04Z,analyst3@contoso.local,203.0.113.45,Failure,Invalid username or password,Office 365,Unknown
+2026-06-09T18:04:22Z,analyst3@contoso.local,203.0.113.45,Failure,Invalid username or password,Office 365,Unknown
+2026-06-09T18:05:39Z,analyst3@contoso.local,203.0.113.45,Failure,Invalid username or password,Office 365,Unknown
+2026-06-09T18:06:50Z,analyst3@contoso.local,203.0.113.45,Failure,Invalid username or password,Office 365,Unknown
+2026-06-09T18:09:13Z,analyst3@contoso.local,198.51.100.24,Success,User authenticated,Office 365,Expected
+2026-06-09T18:14:42Z,j.smith@contoso.local,198.51.100.24,Success,User authenticated,Office 365,Expected
