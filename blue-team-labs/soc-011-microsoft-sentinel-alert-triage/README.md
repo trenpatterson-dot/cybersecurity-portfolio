@@ -105,3 +105,15 @@ The KQL-style query groups failed sign-ins by account and source IP, records the
 - Evidence-based escalation
 - MITRE ATT&CK mapping
 - Public-safe incident documentation
+
+## Video Walkthrough
+
+A video walkthrough for this case is available as part of the Blue Team Command Center video case file series.
+
+**Video Title:** Microsoft Sentinel Alert Investigation Workflow | SOC Case File
+
+**YouTube:** https://youtu.be/-D9hqY_OmkI
+
+This walkthrough explains the investigation methodology used in SOC-011, including alert review, evidence validation, known vs. unknown findings, documentation, and escalation decision-making.
+
+> Note: This is a lab-based portfolio demonstration. No employer, customer, or production data is used.
