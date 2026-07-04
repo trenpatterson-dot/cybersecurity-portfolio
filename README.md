@@ -2,17 +2,28 @@
 
 **B.S. in Cybersecurity, Bellevue University, May 2026**
 
-Blue-team portfolio focused on evidence-based alert triage, log analysis, threat hunting, detection engineering, and incident documentation.
+Blue-team portfolio focused on evidence-based alert triage, log analysis, threat hunting, detection engineering, IAM review, and incident documentation.
 
-**Target roles:** SOC Analyst | Security Analyst | Cybersecurity Operations Analyst
+**Target roles:** SOC Analyst | Security Analyst | IAM Analyst | GRC Analyst
 
 **Core tools:** Wazuh | Windows Event Logs | Wireshark | PowerShell | KQL | MITRE ATT&CK | Microsoft Defender and Sentinel concepts through simulated security operations cases
 
+## Start Here for Recruiters
+
+For the clearest Microsoft SOC analyst story, review these in order:
+
+1. [Blue Team Command Center](https://github.com/trenpatterson-dot/blue-team-command-center) - the most current Microsoft SOC-focused case series.
+2. [SOC-018 through SOC-024 Microsoft SOC series](https://github.com/trenpatterson-dot/blue-team-command-center#featured-recruiter-path-soc-018-to-soc-024) - Sentinel, Defender XDR, Logic Apps, Purview, Azure IAM/RBAC, Conditional Access, and Identity Protection investigations.
+3. [Active Directory Security Monitoring Lab](active-directory-security-monitoring-lab/) - authentication, account lifecycle, and privileged group monitoring.
+4. [Suspicious Network Traffic Investigation](security-plus-projects/suspicious-network-traffic-investigation/) - packet analysis and network scanning evidence.
+
+This repository remains the broader portfolio index. The Blue Team Command Center is the strongest current path for Microsoft SOC, IAM, and cloud identity case work.
+
 ## Portfolio Highlights
 
-* 10+ completed blue-team investigations
+* 20+ completed blue-team, Microsoft security, IAM, and investigation-focused portfolio cases across this repo and Blue Team Command Center
 * Active Directory and IAM monitoring series
-* Microsoft Sentinel, Defender EDR, and KQL investigations
+* Microsoft Sentinel, Defender XDR, Entra ID, Purview, Logic Apps, and KQL-focused investigations
 * Network traffic analysis and threat hunting
 * MITRE ATT&CK-aligned investigation documentation
 
@@ -33,20 +44,22 @@ Blue-team portfolio focused on evidence-based alert triage, log analysis, threat
 - [**SOC-011 - Microsoft Sentinel Alert Triage**](blue-team-labs/soc-011-microsoft-sentinel-alert-triage/)
 - [**SOC-012 - Microsoft Defender EDR Alert Investigation**](blue-team-labs/soc-012-microsoft-defender-edr-alert-investigation/)
 - [**SOC-013 - PowerShell Suspicious Script Investigation**](blue-team-labs/soc-013-powershell-suspicious-script-investigation/)
+- [**SOC-018 through SOC-024 - Microsoft SOC Analyst Portfolio Series**](https://github.com/trenpatterson-dot/blue-team-command-center#featured-recruiter-path-soc-018-to-soc-024)
 
 ## Skills-to-Evidence Matrix
 
 | Skill                             | Portfolio Evidence                                            |
 | --------------------------------- | ------------------------------------------------------------- |
-| Microsoft Sentinel concepts / KQL | SOC-011 Microsoft Sentinel Alert Triage                       |
-| Microsoft Defender EDR concepts   | SOC-012 Microsoft Defender EDR Alert Investigation            |
+| Microsoft Sentinel concepts / KQL | SOC-011 Microsoft Sentinel Alert Triage; SOC-018 Microsoft Sentinel Alert Investigation |
+| Microsoft Defender EDR concepts   | SOC-012 Microsoft Defender EDR Alert Investigation; SOC-019 Microsoft Defender XDR Investigation |
+| Microsoft Entra ID / IAM review   | SOC-022, SOC-023, SOC-024 in Blue Team Command Center; Active Directory Security Monitoring Lab |
 | PowerShell investigation          | SOC-013 PowerShell Suspicious Script Investigation            |
 | Wazuh SIEM alert triage           | SOC Alert Triage Lab                                          |
 | Active Directory / IAM monitoring | Active Directory Security Monitoring Lab                      |
 | Windows Event Logs                | Windows Failed Login Investigation                            |
 | Wireshark / packet analysis       | Suspicious Network Traffic Investigation                      |
 | Threat hunting                    | Advanced Network Intrusion Detection and Threat Hunting       |
-| MITRE ATT&CK mapping              | SOC-011, SOC-012, SOC-013, and network investigation projects |
+| MITRE ATT&CK mapping              | SOC-011 through SOC-024, CTI-001, and network investigation projects |
 
 ## Analyst Approach
 
